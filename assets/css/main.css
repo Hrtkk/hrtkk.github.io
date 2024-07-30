@@ -1,0 +1,41 @@
+body {
+  background-color: rgb(248, 250, 229);
+  color: rgba(34, 63, 129, 0.954);
+  margin: 10px;
+}
+
+.page-header {
+  background-color:  rgb(177, 148, 112);
+  text-align: center;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  height: 150px;
+}
+
+.page-header>h1 {
+  padding-top: 30px;
+}
+
+.page-header-divider {
+  height: 2px;
+  background-color: rgba(34, 63, 129, 0.954);
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.main-content {
+  min-height: 80vh;
+}
+
+.site-footer{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.page-slogan {
+  margin: 5%;
+  width: 70%;
+  text-align: center;
+}
