@@ -1,4 +1,13 @@
 <header class="page-header" role="banner">
-  <h1 class="project-name">{{ page.title | default: site.title | default: site.github.repository_name }}</h1>
+  <h1 class="project-name">{{ site.title | page.title | default: site.title | default: site.github.repository_name }}</h1>
   <div class="page-header-divider" ></div>
+  <div class="header-navigation">
+    <ul class="header-navigation-list">
+      <li><a href="/home/">Home</a></li>
+      <li><a href="/blogs/">Blogs</a></li>
+      <li><a href="/books/">Books</a></li>
+      <li><a href="/resources/">Resources</a></li>
+      <li><a href="/about-me/">About Me</a></li>
+    </ul>
+  </div>
 </header>

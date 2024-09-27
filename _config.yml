@@ -21,4 +21,4 @@ markdown: kramdown
 google_analytics:
 # theme: jekyll-theme-cayman
 sass:
-  sass_dir: assets/scss
+  sass_dir: assets/css

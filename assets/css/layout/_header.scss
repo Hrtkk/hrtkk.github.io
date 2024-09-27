@@ -1,0 +1,39 @@
+.page-header {
+  background-color:  rgba(120, 200, 240, 0.812);
+  text-align: center;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  padding-top: 2%;
+  height: 200px;
+  position: sticky;
+  top: -14%;
+}
+
+.page-header>h1 {
+  padding-top: 30px;
+}
+
+.page-header-divider {
+  height: 2px;
+  background-color: rgba(34, 63, 129, 0.954);
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.header-navigation-list{
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+  margin-right: 10%;
+}
+
+.header-navigation-list>li{
+  padding-left: 3%;
+  font-weight: 500;
+  font-size: large;
+}
+
+.header-navigation-list>li>a{
+  color: unset;
+}
