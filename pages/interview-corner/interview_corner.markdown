@@ -1,5 +1,5 @@
 ---
 layout: default
 title: Resources
-permalink: /resources/
+permalink: /interview-corner/
 ---

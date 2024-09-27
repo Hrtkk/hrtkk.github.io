@@ -2,13 +2,20 @@
 ---
 @charset 'UTF-8';
 
-@import "basics/base";
 
-@import "layout/header";
-@import "layout/content";
-@import "layout/footer";
+@import "01-variables/colors";
+
+@import "02-components/component";
+
+@import "03-basics/base";
+
+@import "04-layout/header";
+@import "04-layout/content";
+@import "04-layout/footer";
 
 
-@import "pages/home";
-@import "section/featured_posts";
-@import "section/latest_posts";
+@import "05-pages/home";
+@import "05-pages/blogs";
+
+@import "06-section/featured_posts";
+@import "06-section/latest_posts";
