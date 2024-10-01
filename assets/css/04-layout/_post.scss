@@ -1,0 +1,40 @@
+
+.posts_container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+
+  &_primary {
+    display: flex;
+    flex-direction: row;
+    padding-top: 5%;
+    padding-bottom: 5%;
+    height: 80%;
+
+    &_left_pane {
+      border-right: solid $body-text-color 1px;
+      width: 15%;
+      padding-top: 5%;
+      padding-bottom: 5%;
+    }
+
+    &_content {
+      width: 70%;
+      margin-left: 5rem;
+      margin-right: 5rem;
+    }
+
+    &_right_pane {
+      width: 15%;
+      border-left: solid 1px;
+      padding-top: 5%;
+      padding-bottom: 5%;
+    }
+  }
+
+  &_seconday {
+    height: 20%;
+
+  }
+}

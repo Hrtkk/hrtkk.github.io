@@ -1,40 +1,24 @@
 ---
-layout: post
 title: Fundamentals on Stream Processing
-date:   2024-09-26 14:25:27 +0530
-categories: blogs
+date:   2024-09-27 14:25:27 +0530
 author: Hritik Kumar
-tags: flink
-excerpt_separator: <!--more-->
+category: blog
+tags:
+  - Flink
+  - Blog
 ---
-## Fundamentals on Stream Processing
+## Fundamentals on Stream Processing: Part 02
 - There are many concepts we need to aware of before we jump into the world of Stream Processing.
-Topics that we will be discussing
-  1. [Brief on stream processing](#brief-on-stream-processing)
-  2. Types of stream processing
-      - Stateless
-      - Stateful
-  3. Components involves
-      - DataFlow Graphs
-      - Data Parallelism and Task Parallelism
-      - Data Exchange Strategies
-        - Forward Strategy
-        - Broadcast Strategy
-        - Key Based Strategy
-        - Random Strategy
-  4. Winodw Functions
-      - Tumbing Window
-      - Sliding Window
-      - Session Window
 
-## Brief on Stream Processing <a name="brief-on-stream-processing"></a>
+### Brief on Stream Processing
 - Stream Processing engine usually perform three types of operations
   - Ingestion (Input)
     - Fetching Raw data from external source (Data Source)
   - Processing (Transformations, Aggregation, etc).
   - Sinking (Output)
-    - Dumping processed and formatted data to external system (Data Sink).
+    - Dumping processed and formatted data to external s̀ystem (Data Sink).
 - We combine these operation into single flow called DataFlow processing graph.
+<!--more-->
 - These processing are of two nature
   - Stateless
     - In Stateless operations, we do not need to maintain any internal state. The events which are being processed are independent of any previous events processed. So there is no need to maintain history.
@@ -61,3 +45,8 @@ Topics that we will be discussing
       - Session Window
         - Assign events on user sessions
         - helpful in user behavior analysis
+
+
+prev << [Introduction on Stream Processing: Part 01](/blog/2024/09/26/Stream-processing-introduction.html)
+
+next >> [Fundamentals on Stream Processing: Part 03](/blog/2024/09/27/Fundamentals-Part-two.html)

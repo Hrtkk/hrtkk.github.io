@@ -22,3 +22,12 @@ google_analytics:
 # theme: jekyll-theme-cayman
 sass:
   sass_dir: assets/css
+defaults:
+  - 
+    scope:
+      path: "_posts"
+      type: "posts"
+    values:
+      layout: "post"
+      excerpt_separator: <!--more-->
+      category: blogs

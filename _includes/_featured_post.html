@@ -1,6 +1,0 @@
-{%- assign featured = site.posts | where: 'tag', 'featured' -%}
-{% for post in featured %}
-  {{ post.excerpt }}
-  <a href="{{ post.url }}#disqus_thread">more</a>
-
-{% endfor %}

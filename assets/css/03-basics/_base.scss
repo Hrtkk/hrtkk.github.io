@@ -1,7 +1,11 @@
 body {
   background-color: rgb(248, 250, 229);
   color: rgba(34, 63, 129, 0.954);
+  font-family: "Kalam", cursive;
+  font-weight: 400;
+  font-style: normal;
   margin: 10px;
+
   > header {
     height: 13%;
   }
@@ -11,4 +15,9 @@ body {
   > footer {
     height: 7%;
   }
+}
+
+.root_main {
+  display: flex;
+  flex-direction: column;
 }

@@ -1,0 +1,28 @@
+.about-me-container {
+  width: 50%;
+  align-self: center;
+}
+
+.about-me{
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+
+  &-title {
+    margin-top: 5rem;
+    font-size: 30px;
+    font-weight: 500;
+
+  }
+
+  &-introduction{
+    margin-top: 3rem;
+
+  }
+
+  &-footnote{
+    margin-top: 5rem;
+
+  }
+}

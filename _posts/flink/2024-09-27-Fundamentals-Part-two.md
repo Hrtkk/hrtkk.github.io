@@ -1,12 +1,13 @@
 ---
-layout: post
 title: Fundamentals on Stream Processing
-date:   2024-09-26 14:25:27 +0530
-categories: techincal
+date:   2024-09-27 14:25:27 +0530
 author: Hritik Kumar
-excerpt_separator: <!--more-->
+category: blog
+tags:
+  - Flink
+  - Blog
 ---
-## Fundamentals on Stream Processing
+## Fundamentals on Stream Processing: Part 03
 - There are many concepts we need to aware of before we jump into the world of Stream Processing.
 Topics that we will be discussing
   - Time Semantics
@@ -15,6 +16,7 @@ Topics that we will be discussing
     - Watermarks
   - State and Consistency Models
   - Failures
+<!--more-->
 
 ## Time Semantics
 - Processing Time
@@ -34,3 +36,5 @@ Topics that we will be discussing
 
 
 ### State and Consistency Models 
+
+prev << [Fundamentals on Stream Processing: Part 02](/blog/2024/09/27/Fundamentals-Part-one.html)
