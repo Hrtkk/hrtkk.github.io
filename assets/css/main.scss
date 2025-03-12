@@ -1,23 +1,37 @@
 ---
+# Only the main Sass file needs front matter (the dashes are enough)
 ---
-@charset 'UTF-8';
 
+@charset "utf-8";
 
+// Variables
 @import "01-variables/colors";
+@import "01-variables/variables";
 
+// Components
 @import "02-components/component";
 
+// Basics
 @import "03-basics/base";
 
+// Layout
 @import "04-layout/header";
 @import "04-layout/content";
 @import "04-layout/footer";
 @import "04-layout/post";
+@import "04-layout/grid";
 
-
+// Pages
 @import "05-pages/home";
 @import "05-pages/blogs";
 @import "05-pages/about-me";
+@import "05-pages/interview-corner";
 
+// Sections
+@import "06-section/hero";
+@import "06-section/features";
+@import "06-section/newsletter";
 @import "06-section/featured_posts";
 @import "06-section/latest_posts";
+
+@use "sass:math"; 

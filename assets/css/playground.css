@@ -1,0 +1,224 @@
+/* Playground Styles */
+.playground-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.game-section {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.game-title {
+    font-size: 1.8rem;
+    color: #1e293b;
+    margin-bottom: 1.5rem;
+}
+
+/* Pattern Game */
+.pattern-game {
+    text-align: center;
+}
+
+.pattern-sequence {
+    font-size: 1.4rem;
+    font-family: monospace;
+    margin: 1rem 0;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.pattern-form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+}
+
+.pattern-input {
+    padding: 0.5rem 1rem;
+    font-size: 1.1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    width: 120px;
+    transition: border-color 0.2s ease;
+}
+
+.pattern-input:focus {
+    outline: none;
+    border-color: #818cf8;
+}
+
+.game-button {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-button {
+    background: #6366f1;
+    color: white;
+}
+
+.hint-button {
+    background: #fbbf24;
+    color: #1e293b;
+}
+
+.next-button {
+    background: #10b981;
+    color: white;
+}
+
+.game-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(110%);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.pattern-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+}
+
+.correct {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.incorrect {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.hint {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+/* Memory Game */
+.memory-board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.memory-card {
+    aspect-ratio: 3/4;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.memory-card.flipped .card-inner {
+    transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 12px;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-front {
+    background: #6366f1;
+    color: white;
+}
+
+.card-back {
+    background: #4f46e5;
+    color: white;
+    transform: rotateY(180deg);
+}
+
+.memory-card.matched .card-back {
+    background: #4338ca;
+}
+
+.game-status {
+    text-align: center;
+    margin-top: 1rem;
+    padding: 1rem;
+    font-size: 1.2rem;
+}
+
+.success {
+    color: #166534;
+    font-weight: bold;
+}
+
+/* Coming Soon Section */
+.coming-soon ul {
+    list-style: none;
+    padding: 0;
+    margin: 1.5rem 0;
+}
+
+.coming-soon li {
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: #f8fafc;
+    border-radius: 8px;
+    color: #1e293b;
+    border: 1px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.coming-soon li:hover {
+    transform: translateX(10px);
+    border-color: #818cf8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .memory-board {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    
+    .pattern-form {
+        flex-direction: column;
+    }
+    
+    .pattern-input {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .memory-board {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .game-title {
+        font-size: 1.5rem;
+    }
+} 

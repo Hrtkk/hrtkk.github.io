@@ -1,0 +1,368 @@
+.interview-corner {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: $bg-secondary;
+  color: $text-primary;
+  font-family: "Kalam", cursive;
+
+  &-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+    background-color: $bg-primary;
+  }
+
+  .topic-filters,
+  .topic-section,
+  .practice-section,
+  .tips-section {
+    width: 100%;
+    margin-bottom: 3rem;
+  }
+
+  .topic-filters {
+    margin-bottom: 3rem;
+    background: $bg-tertiary;
+    padding: 2rem;
+    border-radius: 12px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .filters-wrapper {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .search-container {
+      flex: 0 0 auto;
+      width: 300px;
+
+      .search-box {
+        position: relative;
+        width: 100%;
+
+        input {
+          width: 100%;
+          padding: 1.2rem 1.2rem 1.2rem 3.5rem;
+          border: 1px solid $border-color;
+          border-radius: 12px;
+          font-size: 1rem;
+          background: $bg-primary;
+          color: $text-primary;
+          transition: all 0.2s ease;
+
+          &::placeholder {
+            color: $text-muted;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: $accent-color;
+            box-shadow: 0 0 0 3px rgba($accent-color, 0.1);
+          }
+        }
+
+        i {
+          position: absolute;
+          left: 1.2rem;
+          top: 50%;
+          transform: translateY(-50%);
+          color: $text-muted;
+          font-size: 1.2rem;
+          pointer-events: none;
+        }
+      }
+    }
+
+    .filters-container {
+      flex: 1 1 auto;
+      display: flex;
+      justify-content: flex-end;
+
+      .category-filters {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+
+        .filter-btn {
+          padding: 1rem 1.5rem;
+          border: 1px solid $border-color;
+          border-radius: 12px;
+          background: $bg-primary;
+          color: $text-dark;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          font-weight: 500;
+          white-space: nowrap;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+
+          &:hover {
+            background: $bg-secondary;
+            color: $primary-color;
+            transform: translateY(-1px);
+            border-color: $primary-color;
+          }
+
+          &.active {
+            background: $primary-color;
+            color: $text-white;
+            border-color: transparent;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          }
+        }
+      }
+    }
+  }
+
+  .topic-section {
+    margin-bottom: 4rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+
+    h2 {
+      color: $text-primary;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid $primary-color;
+    }
+  }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .resource-card {
+    background: $bg-primary;
+    border: 1px solid $border-color;
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+    position: relative;
+
+    &:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+      border-color: $primary-color;
+    }
+
+    i {
+      font-size: 2rem;
+      color: $primary-color;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      color: $text-primary;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 2rem 0;
+
+      li {
+        color: $text-dark;
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
+        position: relative;
+
+        &:before {
+          content: "•";
+          color: $primary-color;
+          position: absolute;
+          left: 0;
+        }
+      }
+    }
+
+    .learn-more {
+      color: $primary-color;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      position: absolute;
+      bottom: 1.5rem;
+      
+      i {
+        font-size: 1rem;
+        margin: 0;
+        transition: transform 0.2s ease;
+      }
+
+      &:hover {
+        color: $link-hover-color;
+        
+        i {
+          transform: translateX(5px);
+        }
+      }
+    }
+  }
+
+  .practice-section {
+    margin-bottom: 4rem;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    background: linear-gradient(135deg, $primary-color, $header-gradient-end);
+    padding: 3rem;
+    border-radius: 16px;
+
+    h2 {
+      color: $text-white;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .resource-links {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+
+      .resource-link {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 2rem;
+        background: $bg-primary;
+        border: 1px solid $border-color;
+        border-radius: 8px;
+        color: $text-dark;
+        text-decoration: none;
+        transition: all 0.2s ease;
+        font-weight: 500;
+
+        i:first-child {
+          color: $primary-color;
+          font-size: 1.2rem;
+        }
+
+        i:last-child {
+          font-size: 0.9rem;
+          color: $text-dark;
+          opacity: 0.7;
+        }
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+          border-color: $primary-color;
+        }
+      }
+    }
+  }
+
+  .tips-section {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    h2 {
+      color: $text-primary;
+      font-size: 1.8rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .tips-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+
+      .tip {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: $bg-tertiary;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          transform: translateY(-3px);
+          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+          background: $bg-primary;
+          border: 1px solid $primary-color;
+        }
+
+        i {
+          color: $primary-color;
+          font-size: 1.5rem;
+          padding-top: 0.2rem;
+        }
+
+        p {
+          color: $text-dark;
+          margin: 0;
+          line-height: 1.5;
+        }
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    &-container {
+      padding: 1rem;
+    }
+
+    .topic-filters {
+      padding: 1.5rem;
+
+      .filters-wrapper {
+        flex-direction: column;
+        gap: 1.5rem;
+      }
+
+      .search-container {
+        width: 100%;
+      }
+
+      .filters-container {
+        width: 100%;
+        
+        .category-filters {
+          width: 100%;
+          justify-content: flex-start;
+          gap: 0.75rem;
+          
+          .filter-btn {
+            flex: 1 1 calc(50% - 0.75rem);
+            max-width: calc(50% - 0.75rem);
+            padding: 0.75rem 1rem;
+          }
+        }
+      }
+    }
+
+    .practice-section {
+      padding: 2rem 1.5rem;
+
+      .resource-links {
+        flex-direction: column;
+        
+        .resource-link {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+    }
+  }
+} 

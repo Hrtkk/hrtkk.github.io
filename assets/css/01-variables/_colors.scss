@@ -1,4 +1,50 @@
-$body-text-color: rgba(34, 63, 129, 0.954);
-$header-background-color: rgba(120, 200, 240, 0.812);
-$page-header-background-color: rgba(34, 63, 129, 0.954);
-$footer-background-color: rgba(120, 200, 240, 0.812);
+// Theme Colors
+$primary-color: #007bff;
+$secondary-color: #6c757d;
+$accent-color: #17a2b8;
+$success-color: #28a745;
+$warning-color: #ffc107;
+$danger-color: #dc3545;
+$info-color: #17a2b8;
+
+// Text Colors
+$text-primary: #212529;
+$text-secondary: #6c757d;
+$text-muted: #868e96;
+$text-light: #f8f9fa;
+$text-dark: #343a40;
+$text-white: #ffffff;
+
+// Background Colors
+$bg-primary: #ffffff;
+$bg-secondary: #f8f9fa;
+$bg-tertiary: #e9ecef;
+$bg-dark: #343a40;
+
+// Border Colors
+$border-color: #dee2e6;
+$border-color-light: #e9ecef;
+$border-color-dark: #495057;
+
+// Link Colors
+$link-color: $primary-color;
+$link-hover-color: darken($primary-color, 15%);
+
+// Header Colors
+$header-background-color: $primary-color;
+$header-gradient-end: darken($primary-color, 10%);
+$header-text-color: $text-white;
+$page-header-background-color: $text-white;
+
+// Footer Colors
+$footer-bg: $bg-dark;
+$footer-text: $text-light;
+
+// Social Media Colors
+$github-color: #333333;
+$twitter-color: #1da1f2;
+$linkedin-color: #0077b5;
+
+// Overlay Colors
+$overlay-dark: rgba(0, 0, 0, 0.5);
+$overlay-light: rgba(255, 255, 255, 0.5); 

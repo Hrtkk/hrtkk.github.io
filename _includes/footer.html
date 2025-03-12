@@ -1,7 +1,55 @@
 <footer class="site-footer">
-  <div class="page-slogan">
-    <span> {{ site.slogan }}</span>
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>About ByteScribble</h3>
+      <p class="page-slogan">{{ site.slogan }}</p>
+      <div class="footer-social">
+        {% if site.github.owner_url %}
+        <a href="{{ site.github.owner_url }}" title="GitHub">
+          <i class="fab fa-github"></i>
+        </a>
+        {% endif %}
+        {% if site.twitter_username %}
+        <a href="https://twitter.com/{{ site.twitter_username }}" title="Twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+        {% endif %}
+        {% if site.linkedin_username %}
+        <a href="https://linkedin.com/in/{{ site.linkedin_username }}" title="LinkedIn">
+          <i class="fab fa-linkedin"></i>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="footer-section">
+      <h3>Quick Links</h3>
+      <ul class="footer-links">
+        <li><a href="/">Home</a></li>
+        <li><a href="/blogs/">Blog</a></li>
+        <li><a href="/playground/">Playground</a></li>
+        <li><a href="/interview-corner/">Interview Corner</a></li>
+        <li><a href="/about-me/">About Me</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-section">
+      <h3>Contact</h3>
+      <p>Get in touch with me:</p>
+      <ul class="footer-links">
+        <li>
+          <a href="mailto:{{ site.email }}">
+            <i class="fas fa-envelope"></i> {{ site.email }}
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
-  <span>Managed by {{ site.author }}</span>
-  <span>Mail: {{ site.email }}</span>
+
+  <div class="footer-bottom">
+    <p>&copy; {{ 'now' | date: "%Y" }} {{ site.title }}. All rights reserved. Created by {{ site.author }}</p>
+  </div>
 </footer>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

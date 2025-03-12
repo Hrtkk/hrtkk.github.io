@@ -3,19 +3,90 @@ layout: default
 title: Blogs
 permalink: /blogs/
 ---
-<div class="blogs_container"></div>
-  <div class="blogs_container_primary">
-    <div class="blogs_container_primary_left_pane">
-    </div>
-    <div class="blogs_container_primary_content">
-      <div class="blogs_featured_post_section">
-        {% include _latest_posts.html %}
+
+<div class="blogs-container">
+  <div class="blog-filters">
+    <div class="filters-wrapper">
+      <div class="search-container">
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" placeholder="Search articles..." id="blog-search">
+        </div>
+      </div>
+      <div class="filters-container">
+        <div class="category-filters">
+          <button class="filter-btn active" data-category="all">All</button>
+          <button class="filter-btn" data-category="tech">Tech</button>
+          <button class="filter-btn" data-category="coding">Coding</button>
+          <button class="filter-btn" data-category="career">Career</button>
+        </div>
       </div>
     </div>
-    <div class="blogs_container_primary_right_pane">
-    </div>
   </div>
-  <div class="blogs_container_secondary">
+
+  <div class="featured-post">
+    {% assign featured_post = site.posts.first %}
+    {% if featured_post %}
+    <article class="featured-card">
+      <div class="featured-content">
+        <span class="post-category">{{ featured_post.categories | first }}</span>
+        <h2><a href="{{ featured_post.url }}">{{ featured_post.title }}</a></h2>
+        <p class="post-excerpt">{{ featured_post.excerpt | strip_html | truncatewords: 50 }}</p>
+        <div class="post-meta">
+          <span class="post-date">
+            <i class="far fa-calendar-alt"></i>
+            {{ featured_post.date | date: "%B %d, %Y" }}
+          </span>
+          <span class="read-time">
+            <i class="far fa-clock"></i>
+            {% assign words = featured_post.content | number_of_words %}
+            {{ words | divided_by: 200 | plus: 1 }} min read
+          </span>
+        </div>
+      </div>
+    </article>
+    {% endif %}
   </div>
-  
+
+  <div class="posts-grid">
+    {% for post in site.posts offset:1 %}
+    <article class="post-card">
+      <div class="card-content">
+        <span class="post-category">{{ post.categories | first }}</span>
+        <h3><a href="{{ post.url }}">{{ post.title }}</a></h3>
+        <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 25 }}</p>
+        <div class="post-meta">
+          <span class="post-date">
+            <i class="far fa-calendar-alt"></i>
+            {{ post.date | date: "%B %d, %Y" }}
+          </span>
+          <span class="read-time">
+            <i class="far fa-clock"></i>
+            {% assign words = post.content | number_of_words %}
+            {{ words | divided_by: 200 | plus: 1 }} min read
+          </span>
+        </div>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+
+  <div class="pagination">
+    {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path }}" class="prev-page">
+      <i class="fas fa-chevron-left"></i> Previous
+    </a>
+    {% endif %}
+    
+    <span class="page-number">Page {{ paginator.page }} of {{ paginator.total_pages }}</span>
+    
+    {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path }}" class="next-page">
+      Next <i class="fas fa-chevron-right"></i>
+    </a>
+    {% endif %}
+  </div>
 </div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">

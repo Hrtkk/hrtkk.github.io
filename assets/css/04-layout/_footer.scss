@@ -1,13 +1,135 @@
-.site-footer{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.site-footer {
   background-color: $footer-background-color;
-  align-items: center;
+  color: $footer-text-color;
+  padding: 4rem 2rem 2rem;
+  margin-top: 4rem;
+  border-top: 1px solid $footer-border-color;
+}
+
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 3rem;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid $footer-border-color;
+}
+
+.footer-section {
+  h3 {
+    color: $footer-heading-color;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    letter-spacing: 0.5px;
+  }
+
+  p {
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    color: $footer-text-color;
+  }
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: 0.75rem;
+
+    a {
+      color: $footer-text-color;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &:hover {
+        color: $footer-link-color;
+        transform: translateX(5px);
+      }
+
+      i {
+        color: $accent-color;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+.footer-social {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+
+  a {
+    color: $footer-text-color;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+
+    &:hover {
+      color: $footer-link-color;
+      background-color: $footer-hover-color;
+      transform: translateY(-2px);
+    }
+
+    i {
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2rem auto 0;
+  text-align: center;
+  font-size: 0.9rem;
+  color: $footer-text-color;
+
+  p {
+    margin: 0;
+  }
+
+  a {
+    color: $footer-link-color;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 .page-slogan {
-  margin: 5%;
-  width: 70%;
-  text-align: center;
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0;
+  color: $footer-text-color;
+}
+
+@media (max-width: 768px) {
+  .site-footer {
+    padding: 3rem 1.5rem 1.5rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    text-align: center;
+  }
+
+  .footer-social {
+    justify-content: center;
+  }
+
+  .footer-links li a:hover {
+    transform: none;
+  }
 }

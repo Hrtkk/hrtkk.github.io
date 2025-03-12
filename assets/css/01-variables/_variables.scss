@@ -1,0 +1,31 @@
+// Breakpoints
+$large-breakpoint: 64em !default;
+$medium-breakpoint: 42em !default;
+
+// Headers
+$header-heading-color: $text-white !default;
+$header-bg-color: $primary-color !default;
+$header-bg-color-secondary: darken($primary-color, 10%) !default;
+
+// Text
+$section-headings-color: $text-dark !default;
+$body-text-color: $text-primary !default;
+$body-link-color: $link-color !default;
+$blockquote-text-color: $text-secondary !default;
+
+// Code
+$code-bg-color: $bg-secondary !default;
+$code-text-color: $text-primary !default;
+
+// Borders
+$border-color: $border-color-light !default;
+$table-border-color: $border-color-light !default;
+$hr-border-color: $border-color-light !default;
+
+// Footer
+$footer-background-color: $bg-dark !default;
+$footer-text-color: $text-light !default;
+$footer-link-color: $primary-color !default;
+$footer-border-color: rgba($text-white, 0.1) !default;
+$footer-heading-color: $text-white !default;
+$footer-hover-color: rgba($primary-color, 0.1) !default;

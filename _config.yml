@@ -14,12 +14,19 @@ baseurl: "" # the subpath of your site, e.g. /blog
 url: "" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: "@43ba76670139474"
 github_username:  Hrtkk
+
+# Build settings
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
+
 markdown: kramdown
+
+# Sass/SCSS
 sass:
   sass_dir: assets/css
+  style: compressed
+
 defaults:
   - 
     scope:
