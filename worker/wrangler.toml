@@ -1,0 +1,9 @@
+name = "bytescribble-leaderboard"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+
+# Created with: npx wrangler kv namespace create SCORES
+# Paste the returned id below before deploying.
+[[kv_namespaces]]
+binding = "SCORES"
+id = "REPLACE_AFTER_KV_CREATE"

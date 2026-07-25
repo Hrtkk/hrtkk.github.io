@@ -1,10 +1,17 @@
 // Shared player identity + per-game leaderboards for the playground.
-// Persistence is localStorage (per browser); swap loadAll/saveAll for a
-// fetch to a backend if a global leaderboard ever lands.
+// localStorage always works as the local cache/fallback; when API is set
+// to the deployed Cloudflare Worker URL, boards become global.
+const API = ''; // e.g. 'https://bytescribble-leaderboard.<account>.workers.dev'
 const PLAYER_KEY = 'bs-player';
 const SCORES_KEY = 'bs-scores-v1';
 const KEEP = 25;
 const SHOW = 10;
+
+// localStorage override for testing against a local `wrangler dev`:
+//   localStorage.setItem('bs-api', 'http://localhost:8787')
+function apiBase() {
+  try { return localStorage.getItem('bs-api') || API; } catch { return API; }
+}
 
 export function getPlayer() {
   try { return localStorage.getItem(PLAYER_KEY) || ''; } catch { return ''; }
@@ -48,13 +55,36 @@ export function submitScore(value) {
   list.sort((a, b) => (c.mode === 'low' ? a.score - b.score : b.score - a.score));
   all[c.game] = list.slice(0, KEEP);
   saveAll(all);
-  renderBoard();
+  renderList(c, all[c.game], false);
+
+  const base = apiBase();
+  if (!base) return;
+  fetch(`${base}/scores`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ game: c.game, name, score: value })
+  })
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => { if (d?.scores) renderList(c, d.scores, true); })
+    .catch(() => {});
 }
 
 export function renderBoard() {
   const c = boardCfg();
   if (!c) return;
-  const list = (loadAll()[c.game] || []).slice(0, SHOW);
+  renderList(c, loadAll()[c.game] || [], false);
+  const base = apiBase();
+  if (!base) return;
+  fetch(`${base}/scores?game=${encodeURIComponent(c.game)}`)
+    .then((r) => (r.ok ? r.json() : null))
+    .then((d) => { if (d?.scores) renderList(c, d.scores, true); })
+    .catch(() => {});
+}
+
+function renderList(c, entries, isGlobal) {
+  const label = document.querySelector('.board-label');
+  if (label && isGlobal) label.textContent = 'Global leaderboard';
+  const list = entries.slice(0, SHOW);
   const me = getPlayer();
   c.el.innerHTML = '';
   if (!list.length) {
