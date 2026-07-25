@@ -1,26 +1,52 @@
 ---
 import Base from './Base.astro';
-const { title, blurb, description } = Astro.props;
+const { title, blurb, description, game, scoreMode = 'high', scoreUnit = 'pts' } = Astro.props;
 ---
 <Base title={title} description={description}>
-  <div class="container game-wrap">
-    <p class="back-link mono"><a href="/playground/">← Playground</a></p>
-    <h1 class="game-title">{title}</h1>
-    <p class="game-blurb">{blurb}</p>
-    <div class="game-hud mono">
-      <span>Score: <strong id="score">0</strong></span>
-      <slot name="controls" />
-      <button class="btn btn-ghost" id="restart">Restart</button>
+  <div class="container game-cols">
+    <div class="game-wrap">
+      <p class="back-link mono"><a href="/playground/">← Playground</a></p>
+      <h1 class="game-title">{title}</h1>
+      <p class="game-blurb">{blurb}</p>
+      <div class="game-hud mono">
+        <span>Score: <strong id="score">0</strong></span>
+        <slot name="controls" />
+        <button class="btn btn-ghost" id="restart">Restart</button>
+      </div>
+      <div class="game-stage panel">
+        <slot />
+        <form id="name-gate" class="name-gate" hidden>
+          <p class="gate-title">Who's playing?</p>
+          <input id="name-input" maxlength="18" placeholder="Your name" autocomplete="off" autocapitalize="off" spellcheck="false" />
+          <button class="btn" type="submit">Let's play</button>
+          <p class="gate-note mono">Names and scores stay in this browser only.</p>
+        </form>
+      </div>
+      <p class="game-help mono" id="game-help"><slot name="help" /></p>
     </div>
-    <div class="game-stage panel">
-      <slot />
-    </div>
-    <p class="game-help mono" id="game-help"><slot name="help" /></p>
+
+    <aside class="game-rail" aria-label="Leaderboard">
+      <div class="board-box">
+        <p class="board-label mono">Leaderboard</p>
+        <p class="board-player mono">
+          Playing as <strong id="player-chip">—</strong>
+          <button type="button" id="change-name" class="board-change mono">change</button>
+        </p>
+        <ol id="leaderboard" class="board-list" data-game={game} data-mode={scoreMode} data-unit={scoreUnit}></ol>
+      </div>
+    </aside>
   </div>
 </Base>
 
 <style>
-  .game-wrap { max-width: 720px; padding-top: 44px; text-align: center; }
+  .game-cols {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 54px;
+    padding-top: 44px;
+    align-items: start;
+  }
+  .game-wrap { max-width: 720px; text-align: center; justify-self: center; width: 100%; }
   .back-link { font-size: 12.5px; text-align: left; margin: 0 0 26px; }
   .back-link a { color: var(--fg-3); text-decoration: none; }
   .back-link a:hover { color: var(--acc); }
@@ -31,6 +57,7 @@ const { title, blurb, description } = Astro.props;
     align-items: center;
     justify-content: center;
     gap: 22px;
+    flex-wrap: wrap;
     margin-bottom: 18px;
     font-size: 13.5px;
   }
@@ -52,10 +79,104 @@ const { title, blurb, description } = Astro.props;
     padding: 5px 8px;
   }
   .game-stage {
+    position: relative;
     display: grid;
     place-items: center;
     padding: 24px;
     overflow-x: auto;
   }
   .game-help { color: var(--fg-3); font-size: 12px; margin-top: 16px; }
+
+  .name-gate {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: var(--panel);
+    border-radius: inherit;
+  }
+  .gate-title { font-family: var(--serif); font-size: 24px; margin: 0; }
+  #name-input {
+    font-family: var(--mono);
+    font-size: 15px;
+    color: var(--fg);
+    background: var(--well);
+    border: 1px solid var(--line-2);
+    border-radius: 9px;
+    padding: 10px 14px;
+    width: min(240px, 70%);
+    text-align: center;
+    outline: none;
+  }
+  #name-input:focus { border-color: var(--acc-line); }
+  .gate-note { color: var(--fg-3); font-size: 11.5px; margin: 4px 0 0; }
+
+  .game-rail { position: sticky; top: 92px; }
+  .board-label {
+    font-size: 11.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin: 0 0 12px;
+  }
+  .board-player { font-size: 12px; color: var(--fg-2); margin: 0 0 14px; }
+  .board-player strong { color: var(--acc); }
+  .board-change {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-left: 6px;
+    font-size: 11.5px;
+    color: var(--fg-3);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .board-change:hover { color: var(--acc); }
+  .board-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: rank;
+  }
+  .board-list :global(li) {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    font-size: 13.5px;
+  }
+  .board-list :global(li)::before {
+    counter-increment: rank;
+    content: counter(rank);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--fg-3);
+    min-width: 16px;
+  }
+  .board-list :global(li:first-child) { border-top: 0; }
+  .board-list :global(.board-name) {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .board-list :global(.board-score) { font-family: var(--mono); font-size: 12.5px; color: var(--fg-2); }
+  .board-list :global(li.me .board-name) { color: var(--acc); font-weight: 600; }
+  .board-list :global(li.board-empty) { color: var(--fg-3); font-size: 12.5px; }
+  .board-list :global(li.board-empty)::before { content: none; }
+
+  @media (max-width: 1023px) {
+    .game-cols { grid-template-columns: minmax(0, 1fr); gap: 34px; }
+    .game-rail { position: static; max-width: 420px; margin: 0 auto; width: 100%; }
+  }
 </style>
+
+<script>
+  import { initArcade } from '../scripts/arcade.js';
+  initArcade();
+</script>

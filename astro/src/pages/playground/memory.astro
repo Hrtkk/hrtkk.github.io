@@ -5,6 +5,9 @@ import Game from '../../layouts/Game.astro';
   title="Memory"
   blurb="Sixteen tiles, eight pairs, one goldfish brain."
   description="Play Memory in the browser — flip tiles and match all eight pairs."
+  game="memory"
+  scoreMode="low"
+  scoreUnit="flips"
 >
   <div id="grid" class="memory-grid" role="group" aria-label="Memory board"></div>
   <Fragment slot="help">Score counts flips — lower is better · find all 8 pairs</Fragment>
@@ -40,6 +43,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const GLYPHS = ['λ', 'Σ', '∞', '⚑', '♜', '☾', '✳', '⌗'];
   const grid = document.getElementById('grid');
   const scoreEl = document.getElementById('score');
@@ -75,6 +79,7 @@ import Game from '../../layouts/Game.astro';
       if (a.dataset.glyph === b.dataset.glyph) {
         a.classList.add('matched');
         b.classList.add('matched');
+        if (grid.querySelectorAll('.matched').length === 16) submitScore(flips);
       } else {
         lock = true;
         setTimeout(() => {
@@ -87,5 +92,5 @@ import Game from '../../layouts/Game.astro';
   }
 
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

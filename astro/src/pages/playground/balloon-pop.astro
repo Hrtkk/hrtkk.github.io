@@ -5,6 +5,7 @@ import Game from '../../layouts/Game.astro';
   title="Balloon Pop"
   blurb="Type what's on the balloon before it floats away. It gets faster. It always gets faster."
   description="A typing game — pop rising balloons by typing their letter or word. Ten levels, ramping every 30 seconds."
+  game="balloon-pop"
 >
   <canvas id="board" width="460" height="540" aria-label="Balloon Pop game board"></canvas>
   <Fragment slot="controls">
@@ -36,6 +37,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -53,7 +55,7 @@ import Game from '../../layouts/Game.astro';
   const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
   const DIGITS = '0123456789';
 
-  let balloons, pops, buffer, score, lives, level, over, raf;
+  let balloons, pops, buffer, score, lives, level, over, raf, submitted;
   let lastSpawn, lastFrame, elapsedInLevel, flash;
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -82,6 +84,7 @@ import Game from '../../layouts/Game.astro';
     elapsedInLevel = 0;
     flash = { text: `Level ${level}`, t: 60 };
     over = false;
+    submitted = false;
     lastSpawn = 0;
     lastFrame = 0;
     scoreEl.textContent = '0';
@@ -232,11 +235,15 @@ import Game from '../../layouts/Game.astro';
     lastFrame = ts;
     if (!over) tick(dt);
     draw();
+    if (over && !submitted) {
+      submitted = true;
+      submitScore(score);
+    }
     raf = requestAnimationFrame(loop);
   }
 
   document.addEventListener('keydown', (e) => {
-    if (over || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!balloons || over || e.metaKey || e.ctrlKey || e.altKey) return;
     if (mode() === 'chars') {
       const k = e.key.toLowerCase();
       if (k.length !== 1 || !(LETTERS + DIGITS).includes(k)) return;
@@ -262,5 +269,5 @@ import Game from '../../layouts/Game.astro';
   modeEl.addEventListener('change', reset);
   startEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

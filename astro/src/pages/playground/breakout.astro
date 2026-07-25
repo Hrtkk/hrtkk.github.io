@@ -5,6 +5,7 @@ import Game from '../../layouts/Game.astro';
   title="Breakout"
   blurb="Forty-five bricks between you and smug satisfaction."
   description="Play Breakout in the browser — paddle, ball, bricks, three lives."
+  game="breakout"
 >
   <canvas id="board" width="420" height="460" aria-label="Breakout game board"></canvas>
   <Fragment slot="controls">
@@ -30,6 +31,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -40,7 +42,7 @@ import Game from '../../layouts/Game.astro';
   const diffEl = document.getElementById('difficulty');
   const SPEEDS = { easy: { base: 3.8, max: 6.4 }, normal: { base: 4.6, max: 7.5 }, hard: { base: 5.6, max: 8.8 } };
   const speed = () => SPEEDS[diffEl.value] ?? SPEEDS.normal;
-  let bricks, paddleX, ball, score, lives, launched, over, won, raf;
+  let bricks, paddleX, ball, score, lives, launched, over, won, raf, submitted;
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
@@ -49,7 +51,7 @@ import Game from '../../layouts/Game.astro';
     paddleX = (W - PAD_W) / 2;
     score = 0;
     lives = 3;
-    over = won = false;
+    over = won = submitted = false;
     scoreEl.textContent = '0';
     rack();
     cancelAnimationFrame(raf);
@@ -62,7 +64,7 @@ import Game from '../../layouts/Game.astro';
   }
 
   function launch() {
-    if (launched || over) return;
+    if (!ball || launched || over) return;
     launched = true;
     const angle = -Math.PI / 2 + (Math.random() * 0.6 - 0.3);
     ball.vx = Math.cos(angle) * speed().base;
@@ -140,6 +142,10 @@ import Game from '../../layouts/Game.astro';
   function loop() {
     tick();
     draw();
+    if (over && !submitted) {
+      submitted = true;
+      submitScore(score);
+    }
     if (!over) raf = requestAnimationFrame(loop);
     else draw();
   }
@@ -155,6 +161,7 @@ import Game from '../../layouts/Game.astro';
   canvas.addEventListener('touchstart', (e) => { moveTo(e.touches[0].clientX); launch(); }, { passive: true });
   canvas.addEventListener('touchmove', (e) => { moveTo(e.touches[0].clientX); e.preventDefault(); });
   document.addEventListener('keydown', (e) => {
+    if (!ball) return;
     if (e.key === 'ArrowLeft' || e.key === 'a') paddleX = Math.max(paddleX - 26, 0);
     else if (e.key === 'ArrowRight' || e.key === 'd') paddleX = Math.min(paddleX + 26, W - PAD_W);
     else { launch(); return; }
@@ -164,5 +171,5 @@ import Game from '../../layouts/Game.astro';
 
   diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

@@ -5,6 +5,7 @@ import Game from '../../layouts/Game.astro';
   title="Pong"
   blurb="You, a wall with opinions, and first to seven."
   description="Play Pong against a simple AI — mouse, touch, or keyboard, first to seven."
+  game="pong"
 >
   <canvas id="board" width="440" height="320" aria-label="Pong game board"></canvas>
   <Fragment slot="controls">
@@ -30,6 +31,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -99,8 +101,12 @@ import Game from '../../layouts/Game.astro';
 
   function after(towards) {
     updateScore();
-    if (scores.you >= WIN || scores.ai >= WIN) over = true;
-    else serve(towards);
+    if (scores.you >= WIN || scores.ai >= WIN) {
+      over = true;
+      submitScore(scores.you);
+    } else {
+      serve(towards);
+    }
   }
 
   function draw() {
@@ -158,5 +164,5 @@ import Game from '../../layouts/Game.astro';
 
   diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

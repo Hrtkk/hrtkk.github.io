@@ -5,6 +5,7 @@ import Game from '../../layouts/Game.astro';
   title="Snake"
   blurb="The original. 20×20 grid, no mercy."
   description="Play Snake in the browser — keyboard or touch, 20×20 grid."
+  game="snake"
 >
   <canvas id="board" width="400" height="400" aria-label="Snake game board"></canvas>
   <Fragment slot="controls">
@@ -30,6 +31,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -66,6 +68,7 @@ import Game from '../../layouts/Game.astro';
     if (head.x < 0 || head.y < 0 || head.x >= N || head.y >= N || snake.some((s) => s.x === head.x && s.y === head.y)) {
       dead = true;
       clearInterval(timer);
+      submitScore(score);
       draw();
       return;
     }
@@ -107,7 +110,7 @@ import Game from '../../layouts/Game.astro';
   };
   document.addEventListener('keydown', (e) => {
     const t = turns[e.key];
-    if (!t) return;
+    if (!t || !dir) return;
     e.preventDefault();
     if (t.x !== -dir.x || t.y !== -dir.y) nextDir = t;
   });
@@ -115,7 +118,7 @@ import Game from '../../layouts/Game.astro';
   let touchStart = null;
   canvas.addEventListener('touchstart', (e) => (touchStart = e.touches[0]), { passive: true });
   canvas.addEventListener('touchend', (e) => {
-    if (!touchStart) return;
+    if (!touchStart || !dir) return;
     const dx = e.changedTouches[0].clientX - touchStart.clientX;
     const dy = e.changedTouches[0].clientY - touchStart.clientY;
     const t = Math.abs(dx) > Math.abs(dy) ? { x: Math.sign(dx), y: 0 } : { x: 0, y: Math.sign(dy) };
@@ -125,5 +128,5 @@ import Game from '../../layouts/Game.astro';
 
   diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

@@ -5,6 +5,8 @@ import Game from '../../layouts/Game.astro';
   title="Typing Test"
   blurb="Two, five, or ten minutes. The words-per-minute number doesn't lie."
   description="A timed typing test — 2, 5, or 10 minutes with live WPM, accuracy, and error stats."
+  game="typing-test"
+  scoreUnit="WPM"
 >
   <div class="type-wrap">
     <div id="text" class="type-text" tabindex="0" aria-label="Typing area"></div>
@@ -99,6 +101,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const textEl = document.getElementById('text');
   const resultsEl = document.getElementById('results');
   const scoreEl = document.getElementById('score');
@@ -190,10 +193,11 @@ import Game from '../../layouts/Game.astro';
     document.getElementById('r-errors').textContent = String(errors);
     scoreEl.textContent = String(Math.max(net, 0));
     resultsEl.hidden = false;
+    submitScore(Math.max(net, 0));
   }
 
   function onKey(e) {
-    if (finished || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (!chars || finished || e.metaKey || e.ctrlKey || e.altKey) return;
 
     if (e.key === 'Backspace') {
       e.preventDefault();
@@ -228,5 +232,5 @@ import Game from '../../layouts/Game.astro';
   textEl.addEventListener('click', () => mobileInput.focus({ preventScroll: true }));
   durationEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

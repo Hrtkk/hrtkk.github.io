@@ -5,6 +5,8 @@ import Game from '../../layouts/Game.astro';
   title="Flappy Byte"
   blurb="Tap to flap. The pipes are unmoved by your feelings."
   description="A tiny Flappy Bird clone — tap, click, or press space to stay airborne."
+  game="flappy"
+  scoreUnit="pipes"
 >
   <canvas id="board" width="340" height="440" aria-label="Flappy Byte game board"></canvas>
   <Fragment slot="controls">
@@ -30,6 +32,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const canvas = document.getElementById('board');
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
@@ -43,7 +46,7 @@ import Game from '../../layouts/Game.astro';
     hard: { speed: 2.8, gap: 112, spacing: 175 }
   };
   let GAP, SPEED, SPACING;
-  let bird, pipes, score, started, over, raf;
+  let bird, pipes, score, started, over, raf, submitted;
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
@@ -55,6 +58,7 @@ import Game from '../../layouts/Game.astro';
     score = 0;
     started = false;
     over = false;
+    submitted = false;
     scoreEl.textContent = '0';
     cancelAnimationFrame(raf);
     loop();
@@ -67,7 +71,7 @@ import Game from '../../layouts/Game.astro';
   }
 
   function flap() {
-    if (over) return;
+    if (!bird || over) return;
     started = true;
     bird.vy = FLAP;
   }
@@ -129,6 +133,10 @@ import Game from '../../layouts/Game.astro';
   function loop() {
     tick();
     draw();
+    if (over && !submitted) {
+      submitted = true;
+      submitScore(score);
+    }
     raf = requestAnimationFrame(loop);
   }
 
@@ -143,5 +151,5 @@ import Game from '../../layouts/Game.astro';
 
   diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>

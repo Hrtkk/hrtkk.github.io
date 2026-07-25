@@ -5,6 +5,9 @@ import Game from '../../layouts/Game.astro';
   title="Tic-Tac-Toe"
   blurb="Unbeatable minimax opponent. Sorry."
   description="Play Tic-Tac-Toe against a perfect minimax opponent."
+  game="tic-tac-toe"
+  scoreMode="tally"
+  scoreUnit="wins"
 >
   <div>
     <div id="board" class="ttt-grid" role="group" aria-label="Tic-Tac-Toe board"></div>
@@ -39,6 +42,7 @@ import Game from '../../layouts/Game.astro';
 </style>
 
 <script>
+  import { ready, submitScore } from '../../scripts/arcade.js';
   const LINES = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8],
     [0, 3, 6], [1, 4, 7], [2, 5, 8],
@@ -87,6 +91,7 @@ import Game from '../../layouts/Game.astro';
       if (w.player === 'X') {
         statusEl.textContent = 'You won?! Screenshot it — nobody will believe you.';
         scoreEl.textContent = String(++wins);
+        submitScore(1);
       } else if (w.player === 'O') {
         statusEl.textContent = 'Minimax wins. It always does.';
       } else {
@@ -122,5 +127,5 @@ import Game from '../../layouts/Game.astro';
   }
 
   document.getElementById('restart').addEventListener('click', reset);
-  reset();
+  ready(reset);
 </script>
