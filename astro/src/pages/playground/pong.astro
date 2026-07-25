@@ -7,6 +7,15 @@ import Game from '../../layouts/Game.astro';
   description="Play Pong against a simple AI — mouse, touch, or keyboard, first to seven."
 >
   <canvas id="board" width="440" height="320" aria-label="Pong game board"></canvas>
+  <Fragment slot="controls">
+    <label class="hud-control">Difficulty
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+  </Fragment>
   <Fragment slot="help">Mouse / drag / W-S or arrow keys · you serve from the left</Fragment>
 </Game>
 
@@ -26,6 +35,13 @@ import Game from '../../layouts/Game.astro';
   const scoreEl = document.getElementById('score');
   const W = canvas.width, H = canvas.height;
   const PAD_H = 64, PAD_W = 9, BALL_R = 6, WIN = 7;
+  const diffEl = document.getElementById('difficulty');
+  const LEVELS = {
+    easy: { serve: 3.6, max: 7, ai: 2.9 },
+    normal: { serve: 4.2, max: 8, ai: 3.6 },
+    hard: { serve: 5, max: 9, ai: 4.5 }
+  };
+  const level = () => LEVELS[diffEl.value] ?? LEVELS.normal;
   let you, ai, ball, scores, over, raf, keys = {};
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -42,7 +58,8 @@ import Game from '../../layouts/Game.astro';
 
   function serve(towards) {
     const angle = (Math.random() * 0.5 - 0.25) * Math.PI;
-    ball = { x: W / 2, y: H / 2, vx: Math.cos(angle) * 4.2 * towards, vy: Math.sin(angle) * 4.2 };
+    const v = level().serve;
+    ball = { x: W / 2, y: H / 2, vx: Math.cos(angle) * v * towards, vy: Math.sin(angle) * v };
   }
 
   function updateScore() {
@@ -56,7 +73,8 @@ import Game from '../../layouts/Game.astro';
 
     // AI tracks with a speed cap so it stays beatable
     const target = ball.y - PAD_H / 2;
-    ai += Math.min(Math.max(target - ai, -3.6), 3.6);
+    const cap = level().ai;
+    ai += Math.min(Math.max(target - ai, -cap), cap);
     ai = Math.min(Math.max(ai, 0), H - PAD_H);
 
     ball.x += ball.vx;
@@ -66,7 +84,7 @@ import Game from '../../layouts/Game.astro';
 
     const bounce = (padY) => {
       const hit = (ball.y - (padY + PAD_H / 2)) / (PAD_H / 2);
-      const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.04, 8);
+      const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.04, level().max);
       const dir = ball.vx > 0 ? -1 : 1;
       const angle = hit * 0.95;
       ball.vx = Math.cos(angle) * speed * dir;
@@ -138,6 +156,7 @@ import Game from '../../layouts/Game.astro';
     if (e.key === 'ArrowDown' || e.key === 's') keys.down = false;
   });
 
+  diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
   reset();
 </script>

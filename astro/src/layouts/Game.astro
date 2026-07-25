@@ -9,6 +9,7 @@ const { title, blurb, description } = Astro.props;
     <p class="game-blurb">{blurb}</p>
     <div class="game-hud mono">
       <span>Score: <strong id="score">0</strong></span>
+      <slot name="controls" />
       <button class="btn btn-ghost" id="restart">Restart</button>
     </div>
     <div class="game-stage panel">
@@ -34,6 +35,22 @@ const { title, blurb, description } = Astro.props;
     font-size: 13.5px;
   }
   .game-hud strong { color: var(--acc); }
+  .game-hud :global(.hud-control) {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--fg-2);
+    font-size: 12.5px;
+  }
+  .game-hud :global(select) {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--fg);
+    background: var(--well);
+    border: 1px solid var(--line-2);
+    border-radius: 7px;
+    padding: 5px 8px;
+  }
   .game-stage {
     display: grid;
     place-items: center;

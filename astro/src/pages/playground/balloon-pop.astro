@@ -1,0 +1,266 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Balloon Pop"
+  blurb="Type what's on the balloon before it floats away. It gets faster. It always gets faster."
+  description="A typing game — pop rising balloons by typing their letter or word. Ten levels, ramping every 30 seconds."
+>
+  <canvas id="board" width="460" height="540" aria-label="Balloon Pop game board"></canvas>
+  <Fragment slot="controls">
+    <label class="hud-control">Mode
+      <select id="mode">
+        <option value="chars" selected>Letters</option>
+        <option value="words">Words</option>
+      </select>
+    </label>
+    <label class="hud-control">Level
+      <select id="start-level">
+        {Array.from({ length: 10 }, (_, i) => (
+          <option value={i + 1} selected={i === 0}>{i + 1}</option>
+        ))}
+      </select>
+    </label>
+  </Fragment>
+  <Fragment slot="help">Just start typing · balloons past the top cost a life · level ramps every 30 s</Fragment>
+</Game>
+
+<style>
+  #board {
+    width: min(460px, 82vw);
+    height: auto;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    touch-action: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const modeEl = document.getElementById('mode');
+  const startEl = document.getElementById('start-level');
+  const W = canvas.width, H = canvas.height;
+  const RAMP_MS = 30000, MAX_LEVEL = 10, LIVES = 3;
+
+  const WORDS = [
+    'ace', 'api', 'bit', 'bug', 'cat', 'dev', 'dog', 'fix', 'git', 'hex', 'key', 'log', 'map', 'net', 'ram', 'run', 'sky', 'sun', 'tab', 'zip',
+    'byte', 'cache', 'chip', 'clock', 'cloud', 'code', 'data', 'disk', 'fork', 'heap', 'index', 'input', 'linux', 'loop', 'merge', 'node', 'patch', 'query', 'queue', 'stack', 'shell', 'table', 'token', 'wire',
+    'branch', 'buffer', 'commit', 'cursor', 'deploy', 'docker', 'kernel', 'lambda', 'memory', 'module', 'object', 'parser', 'pointer', 'python', 'random', 'record', 'schema', 'server', 'socket', 'stream', 'string', 'syntax', 'thread', 'vector',
+    'algorithm', 'bandwidth', 'callback', 'compiler', 'consumer', 'database', 'debugger', 'endpoint', 'function', 'iterator', 'keyboard', 'latency', 'partition', 'pipeline', 'producer', 'protocol', 'replicas', 'terminal', 'throughput', 'variable'
+  ];
+  const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
+  const DIGITS = '0123456789';
+
+  let balloons, pops, buffer, score, lives, level, over, raf;
+  let lastSpawn, lastFrame, elapsedInLevel, flash;
+
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  const mode = () => modeEl.value;
+  const spawnMs = () => Math.max(2400 - level * 180, 620);
+  const riseSpeed = () => 0.5 + level * 0.13;
+
+  function pickLabel() {
+    if (mode() === 'chars') {
+      const pool = level >= 6 ? LETTERS + DIGITS : LETTERS;
+      return pool[Math.floor(Math.random() * pool.length)];
+    }
+    const pool = WORDS.filter((w) =>
+      level <= 3 ? w.length <= 4 : level <= 6 ? w.length >= 4 && w.length <= 6 : w.length >= 6
+    );
+    return pool[Math.floor(Math.random() * pool.length)];
+  }
+
+  function reset() {
+    balloons = [];
+    pops = [];
+    buffer = '';
+    score = 0;
+    lives = LIVES;
+    level = parseInt(startEl.value, 10) || 1;
+    elapsedInLevel = 0;
+    flash = { text: `Level ${level}`, t: 60 };
+    over = false;
+    lastSpawn = 0;
+    lastFrame = 0;
+    scoreEl.textContent = '0';
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(loop);
+  }
+
+  function spawn() {
+    const label = pickLabel();
+    const r = mode() === 'chars' ? 26 : Math.max(30, 13 + label.length * 5);
+    // avoid spawning identical labels (unpoppable ambiguity in char mode)
+    if (balloons.some((b) => b.label === label)) return;
+    balloons.push({
+      x: r + 14 + Math.random() * (W - 2 * r - 28),
+      y: H + r,
+      r,
+      label,
+      vy: riseSpeed() * (0.85 + Math.random() * 0.3),
+      tone: Math.random() < 0.5
+    });
+  }
+
+  function pop(i) {
+    const b = balloons[i];
+    pops.push({ x: b.x, y: b.y, r: b.r, t: 12 });
+    balloons.splice(i, 1);
+    score += mode() === 'chars' ? 5 * level : (10 + 2 * b.label.length) * level;
+    scoreEl.textContent = String(score);
+  }
+
+  function tick(dt) {
+    elapsedInLevel += dt;
+    if (elapsedInLevel >= RAMP_MS && level < MAX_LEVEL) {
+      level += 1;
+      elapsedInLevel = 0;
+      flash = { text: `Level ${level}`, t: 70 };
+    }
+    lastSpawn += dt;
+    if (lastSpawn >= spawnMs()) {
+      lastSpawn = 0;
+      spawn();
+    }
+    for (const b of balloons) b.y -= b.vy * (dt / 16.7);
+    for (let i = balloons.length - 1; i >= 0; i--) {
+      if (balloons[i].y < -balloons[i].r) {
+        balloons.splice(i, 1);
+        lives -= 1;
+        if (lives <= 0) { over = true; }
+      }
+    }
+    for (const p of pops) p.t -= 1;
+    pops = pops.filter((p) => p.t > 0);
+    if (flash) { flash.t -= 1; if (flash.t <= 0) flash = null; }
+  }
+
+  function draw() {
+    ctx.fillStyle = css('--well');
+    ctx.fillRect(0, 0, W, H);
+
+    for (const b of balloons) {
+      const matched = mode() === 'words' && buffer && b.label.startsWith(buffer);
+      ctx.strokeStyle = css('--line-2');
+      ctx.beginPath();
+      ctx.moveTo(b.x, b.y + b.r);
+      ctx.lineTo(b.x, b.y + b.r + 16);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.ellipse(b.x, b.y, b.r, b.r * 1.12, 0, 0, Math.PI * 2);
+      ctx.fillStyle = b.tone ? css('--acc') : css('--fg-2');
+      ctx.globalAlpha = matched ? 1 : 0.88;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      if (matched) {
+        ctx.lineWidth = 2.5;
+        ctx.strokeStyle = css('--fg');
+        ctx.stroke();
+        ctx.lineWidth = 1;
+      }
+      ctx.fillStyle = css('--bg');
+      ctx.font = `700 ${mode() === 'chars' ? 19 : 13.5}px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      if (matched) {
+        const done = buffer;
+        const rest = b.label.slice(buffer.length);
+        const doneW = ctx.measureText(done).width;
+        const restW = ctx.measureText(rest).width;
+        const startX = b.x - (doneW + restW) / 2;
+        ctx.textAlign = 'left';
+        ctx.fillStyle = css('--fg');
+        ctx.fillText(done, startX, b.y);
+        ctx.fillStyle = css('--bg');
+        ctx.fillText(rest, startX + doneW, b.y);
+        ctx.textAlign = 'center';
+      } else {
+        ctx.fillText(b.label, b.x, b.y);
+      }
+    }
+
+    for (const p of pops) {
+      ctx.strokeStyle = css('--acc');
+      ctx.globalAlpha = p.t / 12;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r + (12 - p.t) * 2.2, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    }
+
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = css('--fg-3');
+    ctx.font = `500 12px ${css('--mono')}`;
+    ctx.textAlign = 'left';
+    const toNext = level < MAX_LEVEL ? ` · next in ${Math.ceil((RAMP_MS - elapsedInLevel) / 1000)}s` : ' · max';
+    ctx.fillText(`Lv ${level}${toNext}`, 12, 22);
+    ctx.textAlign = 'right';
+    ctx.fillText('♥'.repeat(Math.max(lives, 0)), W - 12, 22);
+
+    if (mode() === 'words') {
+      ctx.fillStyle = css('--fg');
+      ctx.font = `600 16px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(buffer ? buffer : '· type a word ·', W / 2, H - 16);
+    }
+
+    if (flash) {
+      ctx.globalAlpha = Math.min(flash.t / 30, 1);
+      ctx.fillStyle = css('--acc');
+      ctx.font = `700 30px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(flash.text, W / 2, H / 2 - 60);
+      ctx.globalAlpha = 1;
+    }
+
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff';
+      ctx.font = `600 21px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(`Popped your last life at Lv ${level}`, W / 2, H / 2 - 14);
+      ctx.fillText('Restart to try again', W / 2, H / 2 + 18);
+    }
+  }
+
+  function loop(ts) {
+    if (!lastFrame) lastFrame = ts;
+    const dt = Math.min(ts - lastFrame, 50);
+    lastFrame = ts;
+    if (!over) tick(dt);
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (over || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (mode() === 'chars') {
+      const k = e.key.toLowerCase();
+      if (k.length !== 1 || !(LETTERS + DIGITS).includes(k)) return;
+      e.preventDefault();
+      // pop the most urgent (highest) matching balloon
+      let best = -1;
+      balloons.forEach((b, i) => { if (b.label === k && (best === -1 || b.y < balloons[best].y)) best = i; });
+      if (best !== -1) pop(best);
+    } else {
+      if (e.key === 'Backspace') { buffer = buffer.slice(0, -1); e.preventDefault(); return; }
+      if (e.key === 'Escape') { buffer = ''; return; }
+      const k = e.key.toLowerCase();
+      if (k.length !== 1 || !LETTERS.includes(k)) return;
+      e.preventDefault();
+      const next = buffer + k;
+      if (!balloons.some((b) => b.label.startsWith(next))) return;
+      buffer = next;
+      const hit = balloons.findIndex((b) => b.label === buffer);
+      if (hit !== -1) { pop(hit); buffer = ''; }
+    }
+  });
+
+  modeEl.addEventListener('change', reset);
+  startEl.addEventListener('change', reset);
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

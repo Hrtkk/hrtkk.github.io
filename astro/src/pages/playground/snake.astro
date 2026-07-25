@@ -7,6 +7,15 @@ import Game from '../../layouts/Game.astro';
   description="Play Snake in the browser — keyboard or touch, 20×20 grid."
 >
   <canvas id="board" width="400" height="400" aria-label="Snake game board"></canvas>
+  <Fragment slot="controls">
+    <label class="hud-control">Speed
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+  </Fragment>
   <Fragment slot="help">Arrow keys / WASD to steer · swipe on touch · any key to start</Fragment>
 </Game>
 
@@ -26,6 +35,8 @@ import Game from '../../layouts/Game.astro';
   const scoreEl = document.getElementById('score');
   const N = 20;
   const CELL = canvas.width / N;
+  const diffEl = document.getElementById('difficulty');
+  const TICK_MS = { easy: 150, normal: 110, hard: 78 };
   let snake, dir, nextDir, food, score, dead, timer;
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -39,7 +50,7 @@ import Game from '../../layouts/Game.astro';
     placeFood();
     scoreEl.textContent = '0';
     clearInterval(timer);
-    timer = setInterval(tick, 110);
+    timer = setInterval(tick, TICK_MS[diffEl.value] ?? 110);
     draw();
   }
 
@@ -112,6 +123,7 @@ import Game from '../../layouts/Game.astro';
     touchStart = null;
   });
 
+  diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
   reset();
 </script>

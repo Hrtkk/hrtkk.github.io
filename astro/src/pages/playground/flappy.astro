@@ -7,6 +7,15 @@ import Game from '../../layouts/Game.astro';
   description="A tiny Flappy Bird clone — tap, click, or press space to stay airborne."
 >
   <canvas id="board" width="340" height="440" aria-label="Flappy Byte game board"></canvas>
+  <Fragment slot="controls">
+    <label class="hud-control">Difficulty
+      <select id="difficulty">
+        <option value="easy">Easy</option>
+        <option value="normal" selected>Normal</option>
+        <option value="hard">Hard</option>
+      </select>
+    </label>
+  </Fragment>
   <Fragment slot="help">Click / tap / space to flap · one point per pipe</Fragment>
 </Game>
 
@@ -25,13 +34,21 @@ import Game from '../../layouts/Game.astro';
   const ctx = canvas.getContext('2d');
   const scoreEl = document.getElementById('score');
   const W = canvas.width, H = canvas.height;
-  const GRAVITY = 0.34, FLAP = -6.2, PIPE_W = 52, GAP = 128, SPEED = 2.2, SPACING = 190;
+  const GRAVITY = 0.34, FLAP = -6.2, PIPE_W = 52;
   const BIRD_X = 84, BIRD_R = 11;
+  const diffEl = document.getElementById('difficulty');
+  const LEVELS = {
+    easy: { speed: 1.8, gap: 150, spacing: 205 },
+    normal: { speed: 2.2, gap: 128, spacing: 190 },
+    hard: { speed: 2.8, gap: 112, spacing: 175 }
+  };
+  let GAP, SPEED, SPACING;
   let bird, pipes, score, started, over, raf;
 
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
   function reset() {
+    ({ speed: SPEED, gap: GAP, spacing: SPACING } = LEVELS[diffEl.value] ?? LEVELS.normal);
     bird = { y: H / 2, vy: 0 };
     pipes = [];
     for (let i = 0; i < 3; i++) addPipe(W + 80 + i * SPACING);
@@ -124,6 +141,7 @@ import Game from '../../layouts/Game.astro';
     }
   });
 
+  diffEl.addEventListener('change', reset);
   document.getElementById('restart').addEventListener('click', reset);
   reset();
 </script>
