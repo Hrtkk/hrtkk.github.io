@@ -1,0 +1,93 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { formatDate } from '../../utils.js';
+
+const entries = (await getCollection('scribbles')).sort((a, b) => b.data.date - a.data.date);
+const rendered = await Promise.all(
+  entries.map(async (entry) => ({ entry, Content: (await render(entry)).Content }))
+);
+
+function domain(url) {
+  return new URL(url).hostname.replace(/^www\./, '');
+}
+---
+<Base title="Scribbles" description="Half-thoughts, links, and photos from Hritik Kumar. No titles, no reading time — the anti-blog.">
+  <div class="container">
+    <header class="scribbles-header">
+      <h1>Scribbles</h1>
+      <p class="scribbles-sub">Half-thoughts, links, and photos. No titles, no reading time — the anti-blog.</p>
+    </header>
+
+    <div class="timeline">
+      {rendered.map(({ entry, Content }) => (
+        <article class="scribble">
+          <div class="scribble-dot" aria-hidden="true"></div>
+          <p class="scribble-date mono">
+            <time datetime={entry.data.date.toISOString()}>{formatDate(entry.data.date)}</time>
+            <span aria-hidden="true"> · </span>{entry.data.kind}
+          </p>
+          {entry.data.kind === 'link' && entry.data.linkUrl && (
+            <a class="link-card panel" href={entry.data.linkUrl} rel="noopener">
+              <span class="link-title">{entry.data.linkTitle}</span>
+              <span class="link-domain mono">{domain(entry.data.linkUrl)}</span>
+            </a>
+          )}
+          {entry.data.kind === 'photo' && entry.data.photo && (
+            <figure class="photo-figure">
+              <img src={entry.data.photo} alt={entry.data.caption ?? ''} loading="lazy" />
+              {entry.data.caption && <figcaption class="mono">{entry.data.caption}</figcaption>}
+            </figure>
+          )}
+          <div class="scribble-body">
+            <Content />
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .scribbles-header { padding: 56px 0 30px; }
+  .scribbles-header h1 { font-size: clamp(36px, 5vw, 48px); }
+  .scribbles-sub { color: var(--fg-2); margin: 10px 0 0; }
+
+  .timeline {
+    border-left: 1px solid var(--line);
+    padding-left: 30px;
+    margin-left: 6px;
+    max-width: 720px;
+  }
+  .scribble { position: relative; padding: 6px 0 40px; }
+  .scribble-dot {
+    position: absolute;
+    left: -34.5px;
+    top: 13px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--acc);
+  }
+  .scribble:not(:first-child) .scribble-dot { background: var(--line-2); }
+  .scribble-date { font-size: 12.5px; color: var(--fg-3); margin: 0 0 10px; }
+  .scribble-body { font-size: 17px; }
+  .scribble-body :global(p) { margin: 0 0 .8em; }
+  .scribble-body :global(p:last-child) { margin-bottom: 0; }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    text-decoration: none;
+  }
+  .link-card:hover { border-color: var(--acc-line); }
+  .link-title { font-family: var(--serif); font-size: 20px; color: var(--fg); }
+  .link-domain { font-size: 12px; color: var(--fg-3); }
+
+  .photo-figure { margin: 0 0 14px; }
+  .photo-figure img { border-radius: 12px; border: 1px solid var(--line); }
+  .photo-figure figcaption { font-size: 12.5px; color: var(--fg-3); margin-top: 8px; }
+</style>

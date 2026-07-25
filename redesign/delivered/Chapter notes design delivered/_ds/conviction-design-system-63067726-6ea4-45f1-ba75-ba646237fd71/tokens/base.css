@@ -1,0 +1,52 @@
+/* ============================================================
+   BASE — Conviction
+   Minimal element resets + helpers that consumers get for free.
+   Tokens only; no component styling lives here.
+   ============================================================ */
+
+.conviction-root,
+[data-conviction] {
+  background: var(--surface-app);
+  color: var(--text-body);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--lh-normal);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Every number, ticker, price, score & timestamp is mono + tabular. */
+.cv-num,
+[data-conviction] .num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Uppercase micro-label used above values and table columns. */
+.cv-label {
+  font-size: var(--text-3xs);
+  font-weight: var(--fw-semibold);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-label);
+  color: var(--text-muted);
+}
+
+/* Mono eyebrow / brand kicker. */
+.cv-kicker {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: var(--tracking-mono);
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+::selection { background: var(--accent-soft); }
+
+.cv-scroll::-webkit-scrollbar { width: 9px; height: 9px; }
+.cv-scroll::-webkit-scrollbar-thumb {
+  background: var(--line-2);
+  border-radius: 8px;
+  border: 2px solid var(--bg);
+}
+.cv-scroll::-webkit-scrollbar-track { background: transparent; }

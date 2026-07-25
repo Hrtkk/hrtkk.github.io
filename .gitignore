@@ -7,3 +7,9 @@ vendor
 Gemfile.lock
 .DS_Store
 .claude/
+
+# Astro
+astro/node_modules/
+astro/dist/
+astro/.astro/
+redesign/delivered/*.zip

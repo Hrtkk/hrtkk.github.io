@@ -1,0 +1,38 @@
+/* ============================================================
+   RADIUS & ELEVATION TOKENS — Conviction
+   Soft, modern rounding. Elevation is carried by borders +
+   background steps far more than by shadow — the dark terminal
+   is almost flat; shadows appear only on overlays & toggles.
+   ============================================================ */
+
+:root {
+  /* ---- Corner radius ---- */
+  --radius-xs:   5px;    /* tier chips, tiny toggles */
+  --radius-sm:   6px;    /* segmented buttons, badges */
+  --radius-md:   8px;    /* inputs, icon buttons */
+  --radius-lg:   9px;    /* primary buttons, nav items */
+  --radius-xl:   13px;   /* cards, panels, tables */
+  --radius-2xl:  16px;   /* large modals */
+  --radius-pill: 999px;  /* sentiment pills, dot legends */
+
+  /* ---- Borders ---- */
+  --border-w:    1px;
+  --border-hair: 1px solid var(--line);
+  --border-soft: 1px solid var(--line-2);
+
+  /* ---- Elevation ---- */
+  --shadow-none:    none;
+  --shadow-toggle:  0 1px 2px rgba(0,0,0,0.10);          /* active segmented pill (light) */
+  --shadow-card:    0 1px 0 rgba(0,0,0,0.20);            /* barely-there card lift (dark) */
+  --shadow-pop:     0 12px 40px rgba(0,0,0,0.45);        /* dialogs, menus (dark) */
+  --shadow-pop-lt:  0 16px 48px rgba(26,26,24,0.16);     /* dialogs (light) */
+
+  /* ---- Focus ---- */
+  --ring:  0 0 0 3px var(--focus-ring);
+
+  /* ---- Motion ---- */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1); /* @kind other */
+  --dur-fast:    0.12s; /* @kind other */
+  --dur-base:    0.15s; /* @kind other */
+  --dur-slow:    0.24s; /* @kind other */
+}

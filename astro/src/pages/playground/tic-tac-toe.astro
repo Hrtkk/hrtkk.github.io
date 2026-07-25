@@ -1,0 +1,126 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Tic-Tac-Toe"
+  blurb="Unbeatable minimax opponent. Sorry."
+  description="Play Tic-Tac-Toe against a perfect minimax opponent."
+>
+  <div>
+    <div id="board" class="ttt-grid" role="group" aria-label="Tic-Tac-Toe board"></div>
+    <p id="status" class="ttt-status mono">You are X — your move.</p>
+  </div>
+  <Fragment slot="help">Score: your wins (good luck) · draws don't count</Fragment>
+</Game>
+
+<style>
+  .ttt-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: min(320px, 74vw);
+    margin: 0 auto;
+  }
+  .ttt-grid :global(button) {
+    aspect-ratio: 1;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    background: var(--well);
+    font-family: var(--mono);
+    font-size: clamp(30px, 8vw, 44px);
+    color: var(--fg);
+    cursor: pointer;
+  }
+  .ttt-grid :global(button:hover:enabled) { border-color: var(--acc-line); }
+  .ttt-grid :global(button:disabled) { cursor: default; }
+  .ttt-grid :global(button.o) { color: var(--acc); }
+  .ttt-grid :global(button.win) { background: var(--acc-soft); border-color: var(--acc-line); }
+  .ttt-status { margin: 18px 0 0; font-size: 13px; color: var(--fg-2); }
+</style>
+
+<script>
+  const LINES = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+    [0, 4, 8], [2, 4, 6]
+  ];
+  const boardEl = document.getElementById('board');
+  const statusEl = document.getElementById('status');
+  const scoreEl = document.getElementById('score');
+  let cells, board, over, wins = 0;
+
+  function winner(b) {
+    for (const [x, y, z] of LINES) {
+      if (b[x] && b[x] === b[y] && b[x] === b[z]) return { player: b[x], line: [x, y, z] };
+    }
+    return b.every(Boolean) ? { player: 'draw', line: [] } : null;
+  }
+
+  function minimax(b, player) {
+    const w = winner(b);
+    if (w) return { score: w.player === 'O' ? 1 : w.player === 'X' ? -1 : 0 };
+    let best = null;
+    for (let i = 0; i < 9; i++) {
+      if (b[i]) continue;
+      b[i] = player;
+      const { score } = minimax(b, player === 'O' ? 'X' : 'O');
+      b[i] = null;
+      if (
+        !best ||
+        (player === 'O' && score > best.score) ||
+        (player === 'X' && score < best.score)
+      ) best = { score, move: i };
+    }
+    return best;
+  }
+
+  function render() {
+    const w = winner(board);
+    cells.forEach((cell, i) => {
+      cell.textContent = board[i] ?? '';
+      cell.classList.toggle('o', board[i] === 'O');
+      cell.classList.toggle('win', Boolean(w && w.line.includes(i)));
+      cell.disabled = Boolean(board[i] || w);
+    });
+    if (w) {
+      over = true;
+      if (w.player === 'X') {
+        statusEl.textContent = 'You won?! Screenshot it — nobody will believe you.';
+        scoreEl.textContent = String(++wins);
+      } else if (w.player === 'O') {
+        statusEl.textContent = 'Minimax wins. It always does.';
+      } else {
+        statusEl.textContent = 'Draw — the optimal outcome. Well played.';
+      }
+    } else {
+      statusEl.textContent = 'You are X — your move.';
+    }
+  }
+
+  function play(i) {
+    if (over || board[i]) return;
+    board[i] = 'X';
+    if (!winner(board)) {
+      const { move } = minimax(board, 'O');
+      if (move !== undefined) board[move] = 'O';
+    }
+    render();
+  }
+
+  function reset() {
+    board = Array(9).fill(null);
+    over = false;
+    boardEl.innerHTML = '';
+    cells = Array.from({ length: 9 }, (_, i) => {
+      const cell = document.createElement('button');
+      cell.setAttribute('aria-label', `Cell ${i + 1}`);
+      cell.addEventListener('click', () => play(i));
+      boardEl.appendChild(cell);
+      return cell;
+    });
+    render();
+  }
+
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

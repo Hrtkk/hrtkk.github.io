@@ -1,0 +1,91 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Memory"
+  blurb="Sixteen tiles, eight pairs, one goldfish brain."
+  description="Play Memory in the browser — flip tiles and match all eight pairs."
+>
+  <div id="grid" class="memory-grid" role="group" aria-label="Memory board"></div>
+  <Fragment slot="help">Score counts flips — lower is better · find all 8 pairs</Fragment>
+</Game>
+
+<style>
+  .memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    width: min(400px, 78vw);
+  }
+  .memory-grid :global(button) {
+    aspect-ratio: 1;
+    border: 1px solid var(--line-2);
+    border-radius: 10px;
+    background: var(--well);
+    font-size: clamp(22px, 6vw, 32px);
+    font-family: var(--mono);
+    cursor: pointer;
+    color: transparent;
+    transition: transform .12s ease, border-color .12s ease;
+  }
+  .memory-grid :global(button:hover) { border-color: var(--acc-line); }
+  .memory-grid :global(button.open) { color: var(--fg); background: var(--bg-2); }
+  .memory-grid :global(button.matched) {
+    color: var(--acc);
+    background: var(--acc-soft);
+    border-color: var(--acc-line);
+    cursor: default;
+    transform: scale(.96);
+  }
+</style>
+
+<script>
+  const GLYPHS = ['λ', 'Σ', '∞', '⚑', '♜', '☾', '✳', '⌗'];
+  const grid = document.getElementById('grid');
+  const scoreEl = document.getElementById('score');
+  let open = [];
+  let flips = 0;
+  let lock = false;
+
+  function reset() {
+    const deck = [...GLYPHS, ...GLYPHS].sort(() => Math.random() - 0.5);
+    grid.innerHTML = '';
+    open = [];
+    flips = 0;
+    lock = false;
+    scoreEl.textContent = '0';
+    deck.forEach((glyph) => {
+      const tile = document.createElement('button');
+      tile.dataset.glyph = glyph;
+      tile.textContent = glyph;
+      tile.setAttribute('aria-label', 'Hidden tile');
+      tile.addEventListener('click', () => flip(tile));
+      grid.appendChild(tile);
+    });
+  }
+
+  function flip(tile) {
+    if (lock || tile.classList.contains('open') || tile.classList.contains('matched')) return;
+    tile.classList.add('open');
+    open.push(tile);
+    scoreEl.textContent = String(++flips);
+    if (open.length === 2) {
+      const [a, b] = open;
+      open = [];
+      if (a.dataset.glyph === b.dataset.glyph) {
+        a.classList.add('matched');
+        b.classList.add('matched');
+      } else {
+        lock = true;
+        setTimeout(() => {
+          a.classList.remove('open');
+          b.classList.remove('open');
+          lock = false;
+        }, 650);
+      }
+    }
+  }
+
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

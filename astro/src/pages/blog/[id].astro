@@ -1,0 +1,268 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Newsletter from '../../components/Newsletter.astro';
+import { formatDate, readingTime, sortedPosts } from '../../utils.js';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { id: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
+const mins = readingTime(post.body);
+
+const all = sortedPosts(await getCollection('blog'));
+const idx = all.findIndex((p) => p.id === post.id);
+const newer = idx > 0 ? all[idx - 1] : null;
+const older = idx < all.length - 1 ? all[idx + 1] : null;
+const related = all
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => (b.data.category === post.data.category) - (a.data.category === post.data.category))
+  .slice(0, 2);
+---
+<Base title={post.data.title} description={post.data.description} ogType="article">
+  <div class="container article-grid">
+    <article class="article-main">
+      <p class="back-link mono"><a href="/blog/">← All articles</a></p>
+      <header class="article-header">
+        <span class="chip chip-acc">{post.data.category}</span>
+        <h1 class="article-title">{post.data.title}</h1>
+        <p class="article-sub">{post.data.description}</p>
+        <div class="article-byline mono">
+          <span class="avatar" aria-hidden="true">HK</span>
+          <span>{post.data.author}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{mins} min read</span>
+        </div>
+      </header>
+
+      <div class="prose" id="article-body">
+        <Content />
+      </div>
+
+      <nav class="article-pager" aria-label="More articles">
+        {older ? (
+          <a href={`/blog/${older.id}/`} class="pager-card panel">
+            <span class="pager-dir mono">← Older</span>
+            <span class="pager-title">{older.data.title}</span>
+          </a>
+        ) : <span></span>}
+        {newer ? (
+          <a href={`/blog/${newer.id}/`} class="pager-card panel pager-next">
+            <span class="pager-dir mono">Newer →</span>
+            <span class="pager-title">{newer.data.title}</span>
+          </a>
+        ) : <span></span>}
+      </nav>
+
+      {related.length > 0 && (
+        <section class="related" aria-label="Related articles">
+          <div class="section-label">Related</div>
+          <ul class="related-list">
+            {related.map((p) => (
+              <li>
+                <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+                <span class="chip">{p.data.category}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <Newsletter compact />
+    </article>
+
+    <aside class="article-rail" aria-label="On this page">
+      {toc.length > 0 && (
+        <div class="toc-box">
+          <p class="toc-label mono">On this page</p>
+          <nav>
+            <ul class="toc-list">
+              {toc.map((h) => (
+                <li class:list={['toc-item', `depth-${h.depth}`]}>
+                  <a href={`#${h.slug}`} data-slug={h.slug}>{h.text}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          <p class="toc-progress mono"><span id="read-pct">0% read</span> · {mins} min total</p>
+        </div>
+      )}
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .article-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 270px;
+    gap: 60px;
+    padding-top: 44px;
+  }
+  .article-main { max-width: 720px; }
+  .back-link { font-size: 12.5px; margin: 0 0 26px; }
+  .back-link a { color: var(--fg-3); text-decoration: none; }
+  .back-link a:hover { color: var(--acc); }
+  .article-header { margin-bottom: 38px; }
+  .article-title {
+    font-size: clamp(32px, 5vw, 46px);
+    letter-spacing: -.01em;
+    margin: 18px 0 14px;
+  }
+  .article-sub {
+    font-family: var(--serif);
+    font-size: 20px;
+    color: var(--fg-2);
+    line-height: 1.5;
+    margin: 0 0 26px;
+  }
+  .article-byline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12.5px;
+    color: var(--fg-2);
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  .avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--acc-soft);
+    border: 1px solid var(--acc-line);
+    color: var(--acc);
+    font-size: 10.5px;
+  }
+
+  .article-pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 54px 0 40px;
+  }
+  .pager-card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: inherit;
+  }
+  .pager-card:hover { border-color: var(--acc-line); color: inherit; }
+  .pager-next { text-align: right; }
+  .pager-dir { font-size: 11.5px; color: var(--fg-3); }
+  .pager-title { font-family: var(--serif); font-size: 17.5px; }
+
+  .related { margin-bottom: 40px; }
+  .related-list { list-style: none; padding: 0; margin: 16px 0 0; }
+  .related-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .related-list li:first-child { border-top: 0; }
+  .related-list a {
+    font-family: var(--serif);
+    font-size: 18.5px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .related-list a:hover { color: var(--acc); }
+
+  .article-rail { min-width: 0; }
+  .toc-box { position: sticky; top: 92px; }
+  .toc-label {
+    font-size: 11.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+    margin: 0 0 14px;
+  }
+  .toc-list { list-style: none; margin: 0; padding: 0; border-left: 1px solid var(--line); }
+  .toc-item a {
+    display: block;
+    padding: 6px 0 6px 16px;
+    font-size: 14px;
+    color: var(--fg-2);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1.5px;
+  }
+  .toc-item.depth-3 a { padding-left: 30px; font-size: 13px; }
+  .toc-item a:hover { color: var(--fg); }
+  .toc-item a.active { color: var(--acc); border-left-color: var(--acc); }
+  .toc-progress {
+    margin: 18px 0 0;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--fg-3);
+  }
+
+  @media (max-width: 1023px) {
+    .article-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+    .article-rail { display: none; }
+    .article-pager { grid-template-columns: 1fr; }
+    .pager-next { text-align: left; }
+  }
+</style>
+
+<script>
+  // Copy buttons on code blocks
+  for (const pre of document.querySelectorAll('.astro-code')) {
+    const btn = document.createElement('button');
+    btn.className = 'code-copy';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', async () => {
+      await navigator.clipboard.writeText(pre.querySelector('code')?.innerText ?? '');
+      btn.textContent = 'Copied';
+      setTimeout(() => (btn.textContent = 'Copy'), 1600);
+    });
+    pre.appendChild(btn);
+  }
+
+  // Active TOC section
+  const tocLinks = [...document.querySelectorAll('.toc-item a')];
+  if (tocLinks.length) {
+    const bySlug = new Map(tocLinks.map((a) => [a.dataset.slug, a]));
+    const headings = [...document.querySelectorAll('#article-body h2, #article-body h3')].filter((h) => bySlug.has(h.id));
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            tocLinks.forEach((a) => a.classList.remove('active'));
+            bySlug.get(entry.target.id)?.classList.add('active');
+          }
+        }
+      },
+      { rootMargin: '-80px 0px -70% 0px' }
+    );
+    headings.forEach((h) => observer.observe(h));
+  }
+
+  // Reading progress
+  const pct = document.getElementById('read-pct');
+  const body = document.getElementById('article-body');
+  if (pct && body) {
+    const update = () => {
+      const rect = body.getBoundingClientRect();
+      const total = rect.height - window.innerHeight;
+      const done = Math.min(Math.max(-rect.top, 0), Math.max(total, 1));
+      pct.textContent = `${Math.round((done / Math.max(total, 1)) * 100)}% read`;
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    update();
+  }
+</script>

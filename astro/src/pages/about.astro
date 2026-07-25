@@ -1,0 +1,87 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="About" description="Hritik Kumar — software developer writing about distributed systems, stream processing, and system design.">
+  <div class="container about-wrap">
+    <header class="about-header">
+      <div class="about-avatar" aria-hidden="true">HK</div>
+      <div>
+        <h1>Hi, I'm Hritik.</h1>
+        <p class="kicker">Software Developer · Oracle</p>
+      </div>
+    </header>
+
+    <div class="about-body">
+      <p>
+        I'm a software developer at Oracle with around four years of experience building
+        both small and large-scale applications. Most of my day-to-day involves
+        stream-processing pipelines and the databases underneath them — which is exactly
+        what I write about here.
+      </p>
+      <p>
+        I'm still learning the deeper nuances of software architecture, and ByteScribble
+        is where I document that journey: the explanation I wish I'd had when I first met
+        each topic, written down while the confusion is still fresh enough to remember.
+        If it helps someone else along the way, even better.
+      </p>
+      <p>
+        Long-form deep-dives live on the <a href="/blog/">blog</a>, shorter thoughts land in
+        <a href="/scribbles/">Scribbles</a>, and the <a href="/playground/">playground</a> is
+        where I put the little games I build to procrastinate on writing.
+      </p>
+
+      <div class="about-now panel">
+        <p class="now-label mono">Currently</p>
+        <ul>
+          <li>Writing a series on stream processing internals — Flink, Kafka, and CDC</li>
+          <li>Working through <em>Designing Data-Intensive Applications</em>, properly this time</li>
+        </ul>
+      </div>
+
+      <p class="about-contact">
+        Say hello: <a href="mailto:hritikkumar.rd@gmail.com">hritikkumar.rd@gmail.com</a> ·
+        <a href="https://github.com/Hrtkk" rel="me">GitHub</a>
+      </p>
+      <p class="about-footnote">Thank you for being part of this journey!</p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .about-wrap { max-width: 760px; }
+  .about-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 64px 0 34px;
+  }
+  .about-header h1 { font-size: clamp(32px, 5vw, 44px); margin-bottom: 8px; }
+  .about-avatar {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 84px;
+    height: 84px;
+    border-radius: 50%;
+    background: var(--acc-soft);
+    border: 1px solid var(--acc-line);
+    color: var(--acc);
+    font-family: var(--mono);
+    font-size: 26px;
+  }
+  .about-body { font-size: 17.5px; line-height: 1.75; }
+  .about-body p { margin: 0 0 1.2em; }
+  .about-now { padding: 22px 26px; margin: 30px 0; }
+  .now-label {
+    font-size: 11.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin: 0 0 10px;
+  }
+  .about-now ul { margin: 0; padding-left: 1.3em; }
+  .about-now li { margin-bottom: .4em; }
+  .about-contact { font-size: 16px; }
+  .about-footnote { color: var(--fg-3); font-style: italic; font-family: var(--serif); }
+</style>

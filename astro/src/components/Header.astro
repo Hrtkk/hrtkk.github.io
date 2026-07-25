@@ -1,0 +1,148 @@
+---
+const nav = [
+  { href: '/blog/', label: 'Blog' },
+  { href: '/playground/', label: 'Playground' },
+  { href: '/scribbles/', label: 'Scribbles' },
+  { href: '/about/', label: 'About' }
+];
+const path = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="container header-inner">
+    <a href="/" class="wordmark" aria-label="ByteScribble home">
+      <span class="wordmark-text">ByteScribble</span>
+      <svg class="scribble-underline" viewBox="0 0 132 8" width="118" height="7" aria-hidden="true">
+        <path d="M2 5.4C22 2.2 44 2.6 63 4.2c19 1.6 41 1.4 67-1.8" fill="none" stroke="var(--acc)" stroke-width="2.1" stroke-linecap="round"></path>
+        <path d="M8 7.2C30 5.6 52 6 74 6.6" fill="none" stroke="var(--acc)" stroke-width="1.2" stroke-linecap="round" opacity=".45"></path>
+      </svg>
+    </a>
+
+    <nav class="main-nav" aria-label="Main">
+      {nav.map((item) => (
+        <a href={item.href} class:list={['nav-link', { current: path.startsWith(item.href) }]}>{item.label}</a>
+      ))}
+    </nav>
+
+    <div class="header-spacer"></div>
+
+    <a href="/blog/#search" class="search-box" title="Search articles">
+      <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+      <span>Search</span>
+    </a>
+
+    <button id="theme-toggle" class="theme-toggle" title="Toggle theme" aria-label="Toggle dark or light theme">
+      <span class="theme-glyph" aria-hidden="true"></span>
+    </button>
+
+    <button id="menu-toggle" class="menu-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+    </button>
+  </div>
+
+  <nav id="mobile-nav" class="mobile-nav" aria-label="Mobile" hidden>
+    {nav.map((item) => (
+      <a href={item.href} class:list={['nav-link', { current: path.startsWith(item.href) }]}>{item.label}</a>
+    ))}
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .header-inner {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    height: 66px;
+  }
+  .wordmark { display: flex; flex-direction: column; gap: 1px; text-decoration: none; }
+  .wordmark-text {
+    font-family: var(--serif);
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    color: var(--fg);
+  }
+  .main-nav { display: flex; align-items: center; gap: 26px; margin-left: 6px; }
+  .nav-link { font-size: 15px; color: var(--fg-2); text-decoration: none; padding: 4px 0; }
+  .nav-link:hover { color: var(--fg); }
+  .nav-link.current { color: var(--fg); }
+  .header-spacer { flex: 1; }
+  .search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 7px 12px;
+    color: var(--fg-3);
+    font-family: var(--mono);
+    font-size: 11.5px;
+    text-decoration: none;
+  }
+  .search-box:hover { border-color: var(--line-2); color: var(--fg-2); }
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--fg-2);
+  }
+  .theme-toggle:hover { border-color: var(--acc-line); color: var(--acc); }
+  .theme-glyph { font-family: var(--mono); font-size: 13px; }
+  .theme-glyph::before { content: "☀"; }
+  :global([data-theme="light"]) .theme-glyph::before { content: "☾"; }
+  .menu-toggle {
+    display: none;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--fg-2);
+  }
+  .mobile-nav {
+    display: none;
+    flex-direction: column;
+    border-top: 1px solid var(--line);
+    padding: 10px 20px 16px;
+    gap: 2px;
+  }
+  .mobile-nav .nav-link { padding: 10px 0; font-size: 16px; }
+  @media (max-width: 900px) {
+    .main-nav, .search-box { display: none; }
+    .menu-toggle { display: flex; }
+    .mobile-nav:not([hidden]) { display: flex; }
+  }
+</style>
+
+<script>
+  const menuBtn = document.getElementById('menu-toggle');
+  const mobileNav = document.getElementById('mobile-nav');
+  menuBtn?.addEventListener('click', () => {
+    const open = mobileNav.hidden;
+    mobileNav.hidden = !open;
+    menuBtn.setAttribute('aria-expanded', String(open));
+  });
+
+  document.getElementById('theme-toggle')?.addEventListener('click', () => {
+    const root = document.documentElement;
+    const next = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+</script>

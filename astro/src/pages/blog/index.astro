@@ -1,0 +1,112 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { sortedPosts } from '../../utils.js';
+
+const posts = sortedPosts(await getCollection('blog'));
+const categories = [...new Set(posts.map((p) => p.data.category))];
+---
+<Base title="Blog" description="All ByteScribble deep-dives: stream processing, Kafka, database internals, and system design.">
+  <div class="container">
+    <header class="blog-header">
+      <h1>Blog</h1>
+      <p class="blog-sub">Every deep-dive, newest first. {posts.length} pieces so far.</p>
+
+      <div class="blog-controls" id="search">
+        <label class="search-field">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+          <input type="search" id="blog-search" placeholder="Search titles and excerpts…" aria-label="Search articles" />
+        </label>
+        <div class="chip-row" role="group" aria-label="Filter by category">
+          <button class="chip active" data-cat="All">All</button>
+          {categories.map((cat) => <button class="chip" data-cat={cat}>{cat}</button>)}
+        </div>
+      </div>
+    </header>
+
+    <div class="blog-list" id="blog-list">
+      {posts.map((post) => <PostRow post={post} />)}
+      <p class="empty-note" id="empty-note" hidden>
+        Nothing matches that. Try fewer words, or <button class="linklike" id="clear-filters">clear the filters</button>.
+      </p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .blog-header { padding: 56px 0 8px; }
+  .blog-header h1 { font-size: clamp(36px, 5vw, 48px); }
+  .blog-sub { color: var(--fg-2); margin: 10px 0 26px; }
+  .search-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 10px 14px;
+    max-width: 480px;
+    color: var(--fg-3);
+  }
+  .search-field:focus-within { border-color: var(--acc-line); }
+  .search-field input {
+    flex: 1;
+    background: none;
+    border: 0;
+    outline: none;
+    font-size: 15px;
+    color: var(--fg);
+  }
+  .search-field input::placeholder { color: var(--fg-3); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+  .blog-list { margin-top: 18px; }
+  .empty-note { color: var(--fg-2); padding: 34px 0; }
+  .linklike {
+    background: none;
+    border: 0;
+    padding: 0;
+    color: var(--acc);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-color: var(--acc-line);
+    text-underline-offset: 3px;
+  }
+</style>
+
+<script>
+  const input = document.getElementById('blog-search');
+  const chips = [...document.querySelectorAll('.chip-row .chip')];
+  const rows = [...document.querySelectorAll('#blog-list .post-row')];
+  const emptyNote = document.getElementById('empty-note');
+  let cat = 'All';
+
+  function apply() {
+    const q = input.value.trim().toLowerCase();
+    let shown = 0;
+    for (const row of rows) {
+      const matchCat = cat === 'All' || row.dataset.category === cat;
+      const matchQ = !q || row.dataset.title.includes(q) || row.dataset.excerpt.includes(q);
+      const show = matchCat && matchQ;
+      row.hidden = !show;
+      if (show) shown++;
+    }
+    emptyNote.hidden = shown > 0;
+  }
+
+  input.addEventListener('input', apply);
+  chips.forEach((chip) =>
+    chip.addEventListener('click', () => {
+      cat = chip.dataset.cat;
+      chips.forEach((c) => c.classList.toggle('active', c === chip));
+      apply();
+    })
+  );
+  document.getElementById('clear-filters').addEventListener('click', () => {
+    input.value = '';
+    cat = 'All';
+    chips.forEach((c) => c.classList.toggle('active', c.dataset.cat === 'All'));
+    apply();
+  });
+  if (location.hash === '#search') input.focus();
+</script>

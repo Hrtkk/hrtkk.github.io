@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,500;0,7..72,600;1,7..72,400&display=swap">
+<script src="./image-slot.js"></script>
+<style>
+  :root{
+    --paper:#FBF8F2; --paper-2:#FFFDF8; --card:#FFFDF8;
+    --ink:#23201B; --ink-2:#57524A; --ink-3:#8A8378;
+    --line:#E7E0D2; --line-2:#D6CDBB;
+    --accent:#0F8B72; --accent-ink:#0B6B58; --accent-soft:#E3F2ED;
+    --sci:#2C64A8; --sci-soft:#E6EEF9;
+    --maths:#A84E22; --maths-soft:#FAEBE1;
+    --warn:#9C5F08; --warn-soft:#FAEFD9;
+    --shadow:0 1px 2px rgba(60,50,30,.05);
+  }
+  [data-theme="dark"]{
+    --paper:#15171A; --paper-2:#1B1E22; --card:#1B1E22;
+    --ink:#EAE6DE; --ink-2:#ABA69C; --ink-3:#7C766D;
+    --line:#2B2F35; --line-2:#3A3F46;
+    --accent:#43BCA0; --accent-ink:#68D2B8; --accent-soft:#15302B;
+    --sci:#7DB0EA; --sci-soft:#16243A;
+    --maths:#E2946C; --maths-soft:#33221A;
+    --warn:#E3AA45; --warn-soft:#33270F;
+    --shadow:none;
+  }
+  html,body{margin:0;padding:0;background:var(--paper);}
+  *{box-sizing:border-box;}
+  a{color:var(--accent-ink);text-decoration:none;}
+  a:hover{color:var(--accent);text-decoration:underline;text-underline-offset:3px;}
+  ::selection{background:var(--accent-soft);}
+  @media print{
+    [data-print-hide]{display:none !important;}
+    [data-print-open]{display:block !important;}
+    html,body{background:#fff;}
+    [data-nobreak]{break-inside:avoid;}
+  }
+</style>
+</helmet>
+
+<div data-theme="{{ theme }}" style="background:var(--paper);color:var(--ink);font-family:Literata,Georgia,'Times New Roman',serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;">
+
+<div style="width:100%;max-width:{{ viewWidth }};margin:0 auto;">
+
+  <header data-print-hide="" style="position:sticky;top:0;z-index:40;background:var(--paper);border-bottom:1px solid var(--line);">
+    <div style="max-width:1180px;margin:0 auto;padding:10px 18px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+      <a href="#top" style="display:flex;align-items:baseline;gap:2px;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:19px;letter-spacing:-.02em;color:var(--ink);text-decoration:none;">
+        <span>Notes</span><span style="color:var(--accent);">.</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:6px;margin-left:6px;padding:3px;background:var(--paper-2);border:1px solid var(--line);border-radius:999px;">
+        <span style="padding:5px 11px;border-radius:999px;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:13px;">Class 10</span>
+        <span style="padding:5px 9px;font-family:Nunito,sans-serif;font-weight:600;font-size:13px;color:var(--ink-3);">9</span>
+        <span style="padding:5px 9px;font-family:Nunito,sans-serif;font-weight:600;font-size:13px;color:var(--ink-3);">11</span>
+      </div>
+      <div style="flex:1 1 120px;"></div>
+      <button type="button" style="display:flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;color:var(--ink-3);font-family:Literata,serif;font-size:14px;cursor:pointer;">
+        <svg viewBox="0 0 24 24" style="width:17px;height:17px;flex:none;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M16.5 16.5 21 21"></path></svg>
+        <span>Search a chapter or topic…</span>
+      </button>
+      <button type="button" onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="width:44px;height:44px;display:grid;place-items:center;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;color:var(--ink-2);cursor:pointer;">
+        <span style="font-size:16px;line-height:1;">{{ themeIcon }}</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="top" style="max-width:1180px;margin:0 auto;padding:0 18px;">
+
+    <div style="display:flex;flex-wrap:wrap;gap:28px;flex-direction:{{ railOrder }};align-items:flex-start;padding:26px 0 0;">
+
+      <aside data-print-hide="" style="display:{{ asideDisplay }};flex:0 1 250px;min-width:230px;position:sticky;top:78px;align-self:flex-start;">
+        <div style="border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);overflow:hidden;">
+          <button type="button" onClick="{{ toggleToc }}" style="width:100%;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 14px;background:transparent;border:0;border-bottom:1px solid var(--line);color:var(--ink-3);font-family:Nunito,sans-serif;font-weight:700;font-size:11px;letter-spacing:.09em;text-transform:uppercase;cursor:pointer;text-align:left;">
+            <span>On this page</span><span style="font-size:13px;">{{ tocIcon }}</span>
+          </button>
+          <nav data-print-open="" style="display:{{ tocDisplay }};padding:8px 6px 12px;">
+            <a href="#s0" style="display:block;padding:9px 10px;border-radius:8px;font-size:14.5px;line-height:1.35;color:var(--ink-2);">In 30 seconds</a>
+            <a href="#s1" style="display:block;padding:9px 10px;border-radius:8px;font-size:14.5px;line-height:1.35;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">1</span>Reflection of light</a>
+            <a href="#s2" style="display:block;padding:9px 10px;border-radius:8px;background:var(--accent-soft);font-size:14.5px;line-height:1.35;color:var(--accent-ink);font-weight:600;"><span style="font-family:Nunito,sans-serif;font-weight:700;margin-right:7px;">2</span>Spherical mirrors</a>
+            <a href="#s3" style="display:block;padding:9px 10px;border-radius:8px;font-size:14.5px;line-height:1.35;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">3</span>Refraction of light</a>
+            <a href="#s4" style="display:block;padding:9px 10px;border-radius:8px;font-size:14.5px;line-height:1.35;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">4</span>Lenses &amp; power</a>
+            <a href="#s5" style="display:block;padding:9px 10px;border-radius:8px;font-size:14.5px;line-height:1.35;color:var(--ink-2);">Quick revision cards</a>
+          </nav>
+        </div>
+        <button type="button" onClick="{{ toggleRevise }}" style="width:100%;margin-top:12px;min-height:46px;display:flex;align-items:center;justify-content:center;gap:9px;padding:0 14px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:12px;color:var(--accent-ink);font-family:Nunito,sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;">
+          <svg viewBox="0 0 24 24" style="width:17px;height:17px;flex:none;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h9M4 12h16M4 18h11"></path></svg>
+          <span>{{ reviseLabel }}</span>
+        </button>
+        <p style="margin:10px 4px 0;font-size:12.5px;line-height:1.5;color:var(--ink-3);">Shows only definitions, formulas and key points.</p>
+      </aside>
+
+      <main style="flex:1 1 430px;min-width:0;padding-bottom:60px;">
+
+        <nav style="display:flex;flex-wrap:wrap;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-3);">
+          <a href="#top">Class 10</a><span>›</span>
+          <a href="#top" style="color:var(--sci);">Science</a><span>›</span>
+          <span style="color:var(--ink-2);">Ch 10</span>
+        </nav>
+
+        <h1 style="margin:12px 0 0;font-family:Nunito,system-ui,sans-serif;font-weight:800;font-size:clamp(28px,5vw,42px);line-height:1.14;letter-spacing:-.025em;color:var(--ink);text-wrap:pretty;">
+          Light — Reflection and Refraction
+        </h1>
+        <svg viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:min(320px,70%);height:11px;margin:6px 0 0;overflow:visible;">
+          <path d="M2 8C40 2 78 11 118 5.5 158 0 196 10 236 6.5 264 4 286 8 298 6" fill="none" stroke="var(--accent)" stroke-width="3.2" stroke-linecap="round" opacity=".85"></path>
+        </svg>
+
+        <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:18px 0 0;">
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;background:var(--sci-soft);color:var(--sci);font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">Science</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:600;font-size:12.5px;">~ 22 min revision</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:600;font-size:12.5px;">Formulas</span>
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 11px;border-radius:999px;border:1px solid var(--line-2);color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:600;font-size:12.5px;">Diagrams</span>
+        </div>
+
+        <p style="margin:14px 0 0;font-size:13px;line-height:1.6;color:var(--ink-3);">
+          AI-assisted · reviewed by a teacher · last updated 12 July 2026 ·
+          <a href="#s5">jump to quick revision</a>
+        </p>
+
+        <div data-print-hide="" style="display:{{ mobileBarDisplay }};margin:16px 0 0;">
+          <div style="display:flex;gap:8px;">
+            <button type="button" onClick="{{ toggleToc }}" style="flex:1 1 auto;min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 14px;background:var(--paper-2);border:1px solid var(--line-2);border-radius:11px;color:var(--ink-2);font-family:Nunito,sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;">
+              <span>Contents</span><span style="font-size:12px;color:var(--ink-3);">{{ tocIcon }}</span>
+            </button>
+            <button type="button" onClick="{{ toggleRevise }}" style="flex:0 0 auto;min-height:44px;display:flex;align-items:center;gap:7px;padding:0 14px;background:var(--accent-soft);border:1px solid var(--accent);border-radius:11px;color:var(--accent-ink);font-family:Nunito,sans-serif;font-weight:700;font-size:13.5px;cursor:pointer;">
+              <svg viewBox="0 0 24 24" style="width:16px;height:16px;flex:none;" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h9M4 12h16M4 18h11"></path></svg>
+              <span>{{ reviseShort }}</span>
+            </button>
+          </div>
+          <nav style="display:{{ mobileTocDisplay }};margin:8px 0 0;padding:6px;border:1px solid var(--line);border-radius:12px;background:var(--card);">
+            <a href="#s0" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);">In 30 seconds</a>
+            <a href="#s1" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">1</span>Reflection of light</a>
+            <a href="#s2" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">2</span>Spherical mirrors</a>
+            <a href="#s3" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">3</span>Refraction of light</a>
+            <a href="#s4" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);"><span style="font-family:Nunito,sans-serif;font-weight:700;color:var(--ink-3);margin-right:7px;">4</span>Lenses &amp; power</a>
+            <a href="#s5" style="display:block;padding:10px;border-radius:8px;font-size:15.5px;color:var(--ink-2);">Quick revision cards</a>
+          </nav>
+        </div>
+
+        <sc-if value="{{ isSummaryCard }}" hint-placeholder-val="{{ true }}">
+          <section id="s0" data-nobreak="" style="margin:26px 0 0;padding:22px 22px 24px;border-radius:16px;background:var(--accent-soft);border:1px solid var(--accent);">
+            <p style="margin:0 0 14px;font-family:Nunito,sans-serif;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);">In 30 seconds</p>
+            <ol style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+              <li style="display:flex;gap:12px;font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;"><span style="flex:none;width:24px;height:24px;margin-top:2px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">1</span><span>Light travels in straight lines; it <strong>reflects</strong> off polished surfaces and <strong>bends (refracts)</strong> when it changes medium.</span></li>
+              <li style="display:flex;gap:12px;font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;"><span style="flex:none;width:24px;height:24px;margin-top:2px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">2</span><span>Two laws of reflection: angle of incidence = angle of reflection, and incident ray, reflected ray and normal are coplanar.</span></li>
+              <li style="display:flex;gap:12px;font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;"><span style="flex:none;width:24px;height:24px;margin-top:2px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">3</span><span>One mirror formula and one lens formula carry most of the numericals — plus magnification.</span></li>
+              <li style="display:flex;gap:12px;font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;"><span style="flex:none;width:24px;height:24px;margin-top:2px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">4</span><span>Refraction is governed by refractive index; Snell's law links the two angles.</span></li>
+              <li style="display:flex;gap:12px;font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;"><span style="flex:none;width:24px;height:24px;margin-top:2px;display:grid;place-items:center;border-radius:50%;background:var(--accent);color:#fff;font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;">5</span><span>Sign convention decides every answer's sign — get it right and the rest is arithmetic.</span></li>
+            </ol>
+          </section>
+        </sc-if>
+
+        <sc-if value="{{ isSummaryPlain }}" hint-placeholder-val="{{ false }}">
+          <section id="s0b" data-nobreak="" style="margin:26px 0 0;padding:20px 0 22px;border-top:2px solid var(--accent);border-bottom:1px solid var(--line);">
+            <p style="margin:0 0 14px;font-family:Nunito,sans-serif;font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);">In 30 seconds</p>
+            <ul style="margin:0;padding:0 0 0 20px;display:flex;flex-direction:column;gap:11px;">
+              <li style="font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;">Light travels in straight lines; it <strong>reflects</strong> off polished surfaces and <strong>bends (refracts)</strong> when it changes medium.</li>
+              <li style="font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;">Two laws of reflection: angle of incidence = angle of reflection, and both rays plus the normal lie in one plane.</li>
+              <li style="font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;">One mirror formula and one lens formula carry most of the numericals — plus magnification.</li>
+              <li style="font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;">Refraction is governed by refractive index; Snell's law links the two angles.</li>
+              <li style="font-size:17.5px;line-height:1.55;color:var(--ink);text-wrap:pretty;">Sign convention decides every answer's sign — get it right and the rest is arithmetic.</li>
+            </ul>
+          </section>
+        </sc-if>
+
+        <div data-print-hide="" style="display:{{ reviseBannerDisplay }};margin:22px 0 0;padding:12px 16px;border-radius:12px;background:var(--accent-soft);border:1px dashed var(--accent);font-size:14.5px;line-height:1.5;color:var(--accent-ink);">
+          <strong style="font-family:Nunito,sans-serif;">Quick-revision mode is on.</strong> Prose is hidden — definitions, formulas and key points only.
+        </div>
+
+        <section id="s1" style="margin:40px 0 0;">
+          <h2 style="display:flex;align-items:baseline;gap:12px;margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:clamp(21px,3.2vw,27px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);">
+            <span style="flex:none;font-size:15px;color:var(--sci);padding-top:3px;">01</span>
+            <span>Reflection of light</span>
+          </h2>
+
+          <p style="display:{{ proseDisplay }};margin:16px 0 0;font-size:17.5px;line-height:1.72;color:var(--ink-2);text-wrap:pretty;">
+            A polished surface sends light back into the same medium instead of absorbing it. This bouncing back is reflection, and it obeys two rules that never change — whether the surface is a plane mirror or a curved one.
+          </p>
+
+          <div data-nobreak="" style="margin:20px 0 0;padding:18px 20px;border-left:3px solid var(--accent);border-radius:0 12px 12px 0;background:var(--paper-2);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);">
+            <p style="margin:0 0 7px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">Definition</p>
+            <p style="margin:0 0 6px;font-family:Nunito,sans-serif;font-weight:800;font-size:19px;color:var(--ink);">Laws of reflection</p>
+            <p style="margin:0;font-size:17px;line-height:1.65;color:var(--ink-2);">(i) The angle of incidence is equal to the angle of reflection. (ii) The incident ray, the reflected ray and the normal at the point of incidence all lie in the same plane.</p>
+          </div>
+
+          <div data-nobreak="" style="margin:20px 0 0;">
+            <p style="margin:0 0 10px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">Key points — image in a plane mirror</p>
+            <ul style="margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;">
+              <li style="display:flex;gap:10px;font-size:17px;line-height:1.6;color:var(--ink);"><span style="color:var(--accent);flex:none;">✓</span><span>Virtual and erect.</span></li>
+              <li style="display:flex;gap:10px;font-size:17px;line-height:1.6;color:var(--ink);"><span style="color:var(--accent);flex:none;">✓</span><span>Same size as the object.</span></li>
+              <li style="display:flex;gap:10px;font-size:17px;line-height:1.6;color:var(--ink);"><span style="color:var(--accent);flex:none;">✓</span><span>As far behind the mirror as the object is in front.</span></li>
+              <li style="display:flex;gap:10px;font-size:17px;line-height:1.6;color:var(--ink);"><span style="color:var(--accent);flex:none;">✓</span><span>Laterally inverted — left becomes right.</span></li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="s2" style="margin:44px 0 0;">
+          <h2 style="display:flex;align-items:baseline;gap:12px;margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:clamp(21px,3.2vw,27px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);">
+            <span style="flex:none;font-size:15px;color:var(--sci);padding-top:3px;">02</span>
+            <span>Spherical mirrors</span>
+          </h2>
+
+          <p style="display:{{ proseDisplay }};margin:16px 0 0;font-size:17.5px;line-height:1.72;color:var(--ink-2);text-wrap:pretty;">
+            A spherical mirror is a slice of a sphere. If the reflecting surface curves inward it is <strong>concave</strong>; outward, <strong>convex</strong>. Almost every question here is answered by locating the object relative to the focus <em>F</em> and the centre of curvature <em>C</em>.
+          </p>
+
+          <figure data-nobreak="" style="display:{{ proseDisplay }};margin:22px 0 0;padding:0;">
+            <div style="position:relative;width:100%;height:min(46vw,300px);border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--paper-2);">
+              <image-slot id="bsn-mirror-diagram" shape="rect" fit="contain" placeholder="Ray diagram — concave mirror, object beyond C"></image-slot>
+            </div>
+            <figcaption style="margin:10px 2px 0;font-size:14px;line-height:1.6;color:var(--ink-3);">
+              <strong style="color:var(--ink-2);font-family:Nunito,sans-serif;">Fig 10.1</strong> — Concave mirror, object beyond <em>C</em>. Image is real, inverted and diminished, formed between <em>F</em> and <em>C</em>.
+            </figcaption>
+            <div style="margin:12px 0 0;padding:14px 16px;border-radius:12px;background:var(--sci-soft);">
+              <p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--sci);">Read the diagram</p>
+              <ul style="margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:6px;">
+                <li style="font-size:16px;line-height:1.55;color:var(--ink-2);"><em>P</em> pole · <em>C</em> centre of curvature · <em>F</em> principal focus</li>
+                <li style="font-size:16px;line-height:1.55;color:var(--ink-2);">A ray parallel to the principal axis passes through <em>F</em> after reflection.</li>
+                <li style="font-size:16px;line-height:1.55;color:var(--ink-2);">For a spherical mirror, <em>R</em> = 2<em>f</em>.</li>
+              </ul>
+            </div>
+          </figure>
+
+          <div data-nobreak="" style="margin:22px 0 0;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);">
+            <div style="padding:9px 16px;background:var(--accent-soft);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);">Formula</span>
+              <span style="font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;color:var(--accent-ink);">Mirror formula</span>
+            </div>
+            <div style="padding:22px 18px;text-align:center;">
+              <span style="display:inline-flex;align-items:center;gap:.35em;font-size:clamp(22px,4vw,30px);color:var(--ink);font-family:Literata,Georgia,serif;">
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">v</span></span>
+                <span>+</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">u</span></span>
+                <span>=</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">f</span></span>
+              </span>
+              <div style="margin:18px 0 0;display:flex;justify-content:center;">
+                <span style="display:inline-flex;align-items:center;gap:.35em;font-size:clamp(19px,3.4vw,25px);color:var(--ink);">
+                  <span style="font-style:italic;">m</span><span>=</span>
+                  <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">h′</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">h</span></span>
+                  <span>=</span><span>−</span>
+                  <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">v</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">u</span></span>
+                </span>
+              </div>
+            </div>
+            <div style="padding:13px 18px;border-top:1px dashed var(--line-2);background:var(--paper);">
+              <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-2);"><strong style="font-family:Nunito,sans-serif;color:var(--ink);">When to use.</strong> Any numerical giving two of <em>u</em>, <em>v</em>, <em>f</em> for a mirror. Distances are measured from the pole, with the incident direction positive.</p>
+            </div>
+          </div>
+
+          <div data-nobreak="" style="display:{{ proseDisplay }};margin:24px 0 0;overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);">
+            <table style="width:100%;border-collapse:collapse;font-size:16px;min-width:420px;">
+              <thead>
+                <tr>
+                  <th style="text-align:left;padding:12px 16px;background:var(--paper-2);border-bottom:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);">Object position</th>
+                  <th style="text-align:left;padding:12px 16px;background:var(--paper-2);border-bottom:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);">Image</th>
+                  <th style="text-align:left;padding:12px 16px;background:var(--paper-2);border-bottom:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:800;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);">Size</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink);">Beyond <em>C</em></td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Real, inverted</td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Diminished</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink);">At <em>C</em></td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Real, inverted</td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Same size</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink);">Between <em>F</em> and <em>C</em></td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Real, inverted</td>
+                  <td style="padding:12px 16px;border-bottom:1px solid var(--line);color:var(--ink-2);">Enlarged</td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;color:var(--ink);">Between <em>P</em> and <em>F</em></td>
+                  <td style="padding:12px 16px;color:var(--ink-2);">Virtual, erect</td>
+                  <td style="padding:12px 16px;color:var(--ink-2);">Enlarged</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="s3" style="margin:44px 0 0;">
+          <h2 style="display:flex;align-items:baseline;gap:12px;margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:clamp(21px,3.2vw,27px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);">
+            <span style="flex:none;font-size:15px;color:var(--sci);padding-top:3px;">03</span>
+            <span>Refraction of light</span>
+          </h2>
+
+          <p style="display:{{ proseDisplay }};margin:16px 0 0;font-size:17.5px;line-height:1.72;color:var(--ink-2);text-wrap:pretty;">
+            Light changes speed when it enters a new medium, so it changes direction at the boundary. That is why a pencil looks bent in a glass of water and a coin in a bucket appears raised.
+          </p>
+
+          <div data-nobreak="" style="margin:20px 0 0;padding:18px 20px;border-left:3px solid var(--accent);border-radius:0 12px 12px 0;background:var(--paper-2);border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);">
+            <p style="margin:0 0 7px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">Definition</p>
+            <p style="margin:0 0 6px;font-family:Nunito,sans-serif;font-weight:800;font-size:19px;color:var(--ink);">Refractive index</p>
+            <p style="margin:0;font-size:17px;line-height:1.65;color:var(--ink-2);">The ratio of the speed of light in vacuum to its speed in the medium. A higher refractive index means light slows more, so it bends more. Glass ≈ 1.5, water ≈ 1.33.</p>
+          </div>
+
+          <div data-nobreak="" style="margin:22px 0 0;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);">
+            <div style="padding:9px 16px;background:var(--accent-soft);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);">Formula</span>
+              <span style="font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;color:var(--accent-ink);">Snell's law</span>
+            </div>
+            <div style="padding:22px 18px;text-align:center;">
+              <span style="display:inline-flex;align-items:center;gap:.35em;font-size:clamp(21px,3.8vw,29px);color:var(--ink);">
+                <span style="display:inline-flex;flex-direction:column;align-items:center;"><span style="padding:0 .2em .06em;font-style:italic;">sin i</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;font-style:italic;">sin r</span></span>
+                <span>=</span>
+                <span style="font-style:italic;">n</span><span style="font-size:.62em;align-self:flex-end;padding-bottom:.25em;">21</span>
+                <span>=</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;"><span style="padding:0 .2em .06em;font-style:italic;">v₁</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;font-style:italic;">v₂</span></span>
+              </span>
+            </div>
+            <div style="padding:13px 18px;border-top:1px dashed var(--line-2);background:var(--paper);">
+              <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-2);"><strong style="font-family:Nunito,sans-serif;color:var(--ink);">When to use.</strong> Whenever a ray crosses from one medium to another and you know either the angles or the refractive indices.</p>
+            </div>
+          </div>
+
+          <div data-nobreak="" style="margin:22px 0 0;padding:18px 20px;border-radius:14px;background:var(--warn-soft);border:1px solid var(--warn);">
+            <p style="display:flex;align-items:center;gap:9px;margin:0 0 9px;font-family:Nunito,sans-serif;font-weight:800;font-size:12px;letter-spacing:.09em;text-transform:uppercase;color:var(--warn);">
+              <svg viewBox="0 0 24 24" style="width:17px;height:17px;flex:none;" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M12 3 22 20H2z"></path><path d="M12 9v5M12 17.2v.1"></path></svg>
+              <span>Common mistakes</span>
+            </p>
+            <ul style="margin:0;padding:0 0 0 18px;display:flex;flex-direction:column;gap:8px;">
+              <li style="font-size:16.5px;line-height:1.6;color:var(--ink);">Measuring angles from the surface instead of from the <strong>normal</strong>.</li>
+              <li style="font-size:16.5px;line-height:1.6;color:var(--ink);">Forgetting the minus sign for an object distance <em>u</em> — it is always negative in the CBSE convention.</li>
+              <li style="font-size:16.5px;line-height:1.6;color:var(--ink);">Writing <em>f</em> positive for a concave mirror. Concave mirror and convex lens: <em>f</em> negative and positive respectively.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section id="s4" style="margin:44px 0 0;">
+          <h2 style="display:flex;align-items:baseline;gap:12px;margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:clamp(21px,3.2vw,27px);line-height:1.25;letter-spacing:-.02em;color:var(--ink);">
+            <span style="flex:none;font-size:15px;color:var(--sci);padding-top:3px;">04</span>
+            <span>Lenses &amp; power</span>
+          </h2>
+
+          <div data-nobreak="" style="margin:20px 0 0;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--card);box-shadow:var(--shadow);">
+            <div style="padding:9px 16px;background:var(--accent-soft);border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px;">
+              <span style="font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent-ink);">Formula</span>
+              <span style="font-family:Nunito,sans-serif;font-weight:700;font-size:12.5px;color:var(--accent-ink);">Lens formula &amp; power</span>
+            </div>
+            <div style="padding:22px 18px;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px 34px;">
+              <span style="display:inline-flex;align-items:center;gap:.35em;font-size:clamp(22px,4vw,30px);color:var(--ink);">
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">v</span></span>
+                <span>−</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">u</span></span>
+                <span>=</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">f</span></span>
+              </span>
+              <span style="display:inline-flex;align-items:center;gap:.35em;font-size:clamp(22px,4vw,30px);color:var(--ink);">
+                <span style="font-style:italic;">P</span><span>=</span>
+                <span style="display:inline-flex;flex-direction:column;align-items:center;font-style:italic;"><span style="padding:0 .2em .06em;">1</span><span style="width:100%;height:1.5px;background:currentColor;"></span><span style="padding:.06em .2em 0;">f</span></span>
+                <span style="font-size:.62em;color:var(--ink-3);">(dioptre, <em>f</em> in m)</span>
+              </span>
+            </div>
+            <div style="padding:13px 18px;border-top:1px dashed var(--line-2);background:var(--paper);">
+              <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-2);"><strong style="font-family:Nunito,sans-serif;color:var(--ink);">When to use.</strong> Lens numericals; and power whenever the question mentions dioptres or spectacle lenses.</p>
+            </div>
+          </div>
+
+          <div data-nobreak="" style="margin:24px 0 0;border:1px solid var(--line-2);border-radius:14px;overflow:hidden;background:var(--card);">
+            <div style="padding:12px 18px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;">
+              <span style="font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">Solved example</span>
+            </div>
+            <div style="padding:18px;">
+              <p style="margin:0;font-size:17px;line-height:1.65;color:var(--ink);"><strong style="font-family:Nunito,sans-serif;">Problem.</strong> An object is placed 25 cm from a convex lens of focal length 10 cm. Find the position of the image.</p>
+              <ol style="margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;">
+                <li style="display:flex;gap:12px;"><span style="flex:none;width:23px;height:23px;margin-top:2px;display:grid;place-items:center;border-radius:6px;background:var(--paper-2);border:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:700;font-size:12px;color:var(--ink-3);">1</span><span style="font-size:16.5px;line-height:1.6;color:var(--ink-2);">Write what is given with signs: <em>u</em> = −25 cm, <em>f</em> = +10 cm.</span></li>
+                <li style="display:flex;gap:12px;"><span style="flex:none;width:23px;height:23px;margin-top:2px;display:grid;place-items:center;border-radius:6px;background:var(--paper-2);border:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:700;font-size:12px;color:var(--ink-3);">2</span><span style="font-size:16.5px;line-height:1.6;color:var(--ink-2);">Use the lens formula: 1/<em>v</em> = 1/<em>f</em> + 1/<em>u</em>.</span></li>
+                <li style="display:flex;gap:12px;"><span style="flex:none;width:23px;height:23px;margin-top:2px;display:grid;place-items:center;border-radius:6px;background:var(--paper-2);border:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:700;font-size:12px;color:var(--ink-3);">3</span><span style="font-size:16.5px;line-height:1.6;color:var(--ink-2);">Substitute: 1/<em>v</em> = 1/10 − 1/25 = (5 − 2)/50 = 3/50.</span></li>
+                <li style="display:flex;gap:12px;"><span style="flex:none;width:23px;height:23px;margin-top:2px;display:grid;place-items:center;border-radius:6px;background:var(--paper-2);border:1px solid var(--line-2);font-family:Nunito,sans-serif;font-weight:700;font-size:12px;color:var(--ink-3);">4</span><span style="font-size:16.5px;line-height:1.6;color:var(--ink-2);">Solve: <em>v</em> = 50/3 ≈ 16.7 cm. Positive, so the image is on the far side of the lens — real and inverted.</span></li>
+              </ol>
+              <p style="margin:16px 0 0;padding:12px 16px;border-radius:10px;background:var(--accent-soft);font-size:17px;line-height:1.55;color:var(--accent-ink);"><strong style="font-family:Nunito,sans-serif;">Answer.</strong> The image forms 16.7 cm behind the lens; real, inverted, diminished.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="s5" style="margin:52px 0 0;padding:24px 0 0;border-top:1px solid var(--line);">
+          <h2 style="margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:clamp(21px,3.2vw,27px);letter-spacing:-.02em;color:var(--ink);">Quick revision cards</h2>
+          <p style="margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--ink-3);">Everything you must not forget, in eight cards. Good for the last twenty minutes.</p>
+          <div style="margin:20px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;">
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Law</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">∠<em>i</em> = ∠<em>r</em>, and incident ray, reflected ray and normal are coplanar.</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Formula</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Mirror: 1/<em>v</em> + 1/<em>u</em> = 1/<em>f</em> &nbsp;·&nbsp; <em>R</em> = 2<em>f</em></p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Formula</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Lens: 1/<em>v</em> − 1/<em>u</em> = 1/<em>f</em> &nbsp;·&nbsp; <em>P</em> = 1/<em>f</em> (m)</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Formula</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Magnification: <em>m</em> = <em>h</em>′/<em>h</em>; mirror −<em>v</em>/<em>u</em>, lens <em>v</em>/<em>u</em>.</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sci);">Definition</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Refractive index — speed of light in vacuum ÷ speed in the medium.</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sci);">Values</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Water 1.33 · glass ≈ 1.5 · diamond 2.42</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--warn);">Watch out</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);"><em>u</em> is always negative. Concave mirror <em>f</em> &lt; 0; convex lens <em>f</em> &gt; 0.</p></div>
+            <div data-nobreak="" style="padding:16px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);box-shadow:var(--shadow);"><p style="margin:0 0 8px;font-family:Nunito,sans-serif;font-weight:800;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);">Key point</p><p style="margin:0;font-size:16.5px;line-height:1.55;color:var(--ink);">Convex mirror &amp; concave lens always give a virtual, erect, diminished image.</p></div>
+          </div>
+        </section>
+
+        <nav data-print-hide="" style="margin:48px 0 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;">
+          <a href="#top" style="display:block;padding:16px 18px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);text-decoration:none;">
+            <span style="display:block;font-size:12.5px;color:var(--ink-3);font-family:Nunito,sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">← Previous</span>
+            <span style="display:block;margin-top:5px;font-family:Nunito,sans-serif;font-weight:700;font-size:16.5px;color:var(--ink);">Ch 9 · Heredity and Evolution</span>
+          </a>
+          <a href="#top" style="display:block;padding:16px 18px;border:1px solid var(--line-2);border-radius:13px;background:var(--card);text-align:right;text-decoration:none;">
+            <span style="display:block;font-size:12.5px;color:var(--ink-3);font-family:Nunito,sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;">Next →</span>
+            <span style="display:block;margin-top:5px;font-family:Nunito,sans-serif;font-weight:700;font-size:16.5px;color:var(--ink);">Ch 11 · The Human Eye</span>
+          </a>
+        </nav>
+
+        <p data-print-hide="" style="margin:20px 0 0;font-size:15px;">
+          <a href="#top">← Back to Class 10 Science</a>
+        </p>
+      </main>
+    </div>
+  </div>
+
+  <footer data-print-hide="" style="border-top:1px solid var(--line);background:var(--paper-2);">
+    <div style="max-width:1180px;margin:0 auto;padding:34px 18px 40px;display:flex;flex-wrap:wrap;gap:26px 44px;">
+      <div style="flex:1 1 240px;min-width:200px;">
+        <p style="margin:0;font-family:Nunito,sans-serif;font-weight:800;font-size:17px;color:var(--ink);">Notes<span style="color:var(--accent);">.</span></p>
+        <p style="margin:8px 0 0;font-size:14.5px;line-height:1.65;color:var(--ink-2);max-width:34ch;">Free chapter-wise revision notes for CBSE. Written with AI assistance, then read and corrected by a teacher before it goes live.</p>
+        <p style="margin:12px 0 0;font-size:14px;color:var(--ink-3);"><a href="https://bytescribble.com">A ByteScribble project</a></p>
+      </div>
+      <div style="flex:0 1 150px;">
+        <p style="margin:0 0 10px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">Classes</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14.5px;">
+          <a href="#top">Class 10 · live</a><span style="color:var(--ink-3);">Class 9 · soon</span><span style="color:var(--ink-3);">Class 11 · soon</span>
+        </div>
+      </div>
+      <div style="flex:0 1 150px;">
+        <p style="margin:0 0 10px;font-family:Nunito,sans-serif;font-weight:800;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);">More</p>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:14.5px;">
+          <a href="#top">Search</a><a href="#top">How we write notes</a><a href="mailto:hello@bytescribble.com">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<div data-print-hide="" style="position:fixed;left:50%;transform:translateX(-50%);bottom:14px;z-index:60;display:flex;align-items:center;gap:6px;padding:6px;border-radius:999px;background:var(--card);border:1px solid var(--line-2);box-shadow:0 6px 24px rgba(30,25,15,.16);font-family:Nunito,sans-serif;">
+  <button type="button" onClick="{{ setDesktop }}" style="min-height:34px;padding:0 12px;border:0;border-radius:999px;background:{{ desktopBg }};color:{{ desktopFg }};font-family:Nunito,sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Desktop</button>
+  <button type="button" onClick="{{ setMobile }}" style="min-height:34px;padding:0 12px;border:0;border-radius:999px;background:{{ mobileBg }};color:{{ mobileFg }};font-family:Nunito,sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Mobile 360</button>
+  <span style="width:1px;height:22px;background:var(--line-2);"></span>
+  <button type="button" onClick="{{ setLayoutA }}" style="min-height:34px;padding:0 12px;border:0;border-radius:999px;background:{{ aBg }};color:{{ aFg }};font-family:Nunito,sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Layout A</button>
+  <button type="button" onClick="{{ setLayoutB }}" style="min-height:34px;padding:0 12px;border:0;border-radius:999px;background:{{ bBg }};color:{{ bFg }};font-family:Nunito,sans-serif;font-weight:700;font-size:13px;cursor:pointer;">Layout B</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;A&quot;,&quot;B&quot;],&quot;default&quot;:&quot;A&quot;,&quot;tsType&quot;:&quot;'A'|'B'&quot;,&quot;section&quot;:&quot;Layout&quot;}}">
+class Component extends DCLogic {
+  state = { theme: 'light', revise: false, layout: 'A', view: 'desktop', tocOpen: true };
+
+  componentDidMount() {
+    const l = this.props.layout;
+    if (l === 'A' || l === 'B') this.setState({ layout: l });
+    if (this.props.theme === 'dark') this.setState({ theme: 'dark' });
+  }
+
+  pill(active) {
+    return active
+      ? { bg: 'var(--accent)', fg: '#fff' }
+      : { bg: 'transparent', fg: 'var(--ink-2)' };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const mobile = s.view === 'mobile';
+    const d = this.pill(!mobile), m = this.pill(mobile);
+    const a = this.pill(s.layout === 'A'), b = this.pill(s.layout === 'B');
+    return {
+      theme: s.theme,
+      themeIcon: s.theme === 'dark' ? '☀' : '☾',
+      toggleTheme: () => this.setState(p => ({ theme: p.theme === 'dark' ? 'light' : 'dark' })),
+      viewWidth: mobile ? '360px' : '100%',
+      railOrder: s.layout === 'A' ? 'row-reverse' : 'row',
+      isSummaryCard: s.layout === 'A',
+      isSummaryPlain: s.layout === 'B',
+      proseDisplay: s.revise ? 'none' : 'block',
+      reviseBannerDisplay: s.revise ? 'block' : 'none',
+      reviseLabel: s.revise ? 'Show full notes' : 'Quick-revision mode',
+      toggleRevise: () => this.setState(p => ({ revise: !p.revise })),
+      asideDisplay: mobile ? 'none' : 'block',
+      mobileBarDisplay: mobile ? 'block' : 'none',
+      mobileTocDisplay: s.tocOpen ? 'block' : 'none',
+      reviseShort: s.revise ? 'Full notes' : 'Revise',
+      tocDisplay: s.tocOpen ? 'block' : 'none',
+      tocIcon: s.tocOpen ? '▲' : '▼',
+      toggleToc: () => this.setState(p => ({ tocOpen: !p.tocOpen })),
+      setDesktop: () => this.setState({ view: 'desktop', tocOpen: true }),
+      setMobile: () => this.setState({ view: 'mobile', tocOpen: false }),
+      setLayoutA: () => this.setState({ layout: 'A' }),
+      setLayoutB: () => this.setState({ layout: 'B' }),
+      desktopBg: d.bg, desktopFg: d.fg, mobileBg: m.bg, mobileFg: m.fg,
+      aBg: a.bg, aFg: a.fg, bBg: b.bg, bFg: b.fg
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,102 @@
+/* ============================================================
+   COLOR TOKENS — Conviction
+   Default theme is the dark research terminal.
+   A light "refined" theme is available via [data-theme="light"].
+   Base values are raw colors; semantic aliases map them to roles.
+   ============================================================ */
+
+:root {
+  /* ---- Base surfaces (dark terminal) ---- */
+  --bg:        #080A0F;   /* app canvas */
+  --panel:     #0E1320;   /* sidebar, cards, header */
+  --panel-2:   #121826;   /* insets, table headers, inputs */
+  --panel-3:   #1E2A3C;   /* hover wells, avatars */
+  --line:      #1B2230;   /* hairline dividers, card borders */
+  --line-2:    #283142;   /* stronger borders, hover edges */
+
+  /* ---- Text ---- */
+  --ink:       #E7EAF0;   /* primary text */
+  --muted:     #8B94A4;   /* secondary text, labels */
+  --faint:     #5A6271;   /* tertiary, captions, placeholders */
+  --on-accent: #FFFFFF;   /* text on a filled accent button */
+
+  /* ---- Brand accent (blue) ---- */
+  --accent:    #3B82F6;
+  --accent-bright: #60A5FA;
+  --accent-soft:   rgba(59,130,246,0.14);
+  --logo-from: #10B981;   /* logo gradient start */
+  --logo-to:   #3B82F6;   /* logo gradient end */
+
+  /* ---- Directional / market semantics ---- */
+  --pos:       #10B981;   /* bullish, gains, up */
+  --pos-soft:  rgba(16,185,129,0.14);
+  --neg:       #EF4444;   /* bearish, losses, down */
+  --neg-soft:  rgba(239,68,68,0.13);
+  --neu:       #8B94A4;   /* neutral / no signal */
+  --neu-soft:  rgba(139,148,164,0.14);
+  --warn:      #F59E0B;   /* caution, overbought, soft flag */
+  --warn-soft: rgba(245,158,11,0.15);
+
+  /* ---- Conviction tiers (A / B / C / Ignore) ---- */
+  --tier-a:    #10B981;   --tier-a-soft: rgba(16,185,129,0.14);
+  --tier-b:    #3B82F6;   --tier-b-soft: rgba(59,130,246,0.14);
+  --tier-c:    #F59E0B;   --tier-c-soft: rgba(245,158,11,0.15);
+  --tier-x:    #9CA6B5;   --tier-x-soft: rgba(107,114,128,0.16);
+
+  /* ---- Chart / data-viz series ---- */
+  --series-1:  #3B82F6;   /* blue   — EMA20 / fundamentals */
+  --series-2:  #10B981;   /* green  — technicals */
+  --series-3:  #F59E0B;   /* amber  — EMA200 / sector */
+  --series-4:  #A78BFA;   /* violet — sentiment / EMA50 */
+  --series-5:  #22D3EE;   /* cyan */
+  --series-6:  #F472B6;   /* pink */
+
+  /* ---- Semantic surface aliases ---- */
+  --surface-app:    var(--bg);
+  --surface-card:   var(--panel);
+  --surface-inset:  var(--panel-2);
+  --surface-hover:  #0F1420;
+  --text-body:      var(--ink);
+  --text-muted:     var(--muted);
+  --text-faint:     var(--faint);
+  --border:         var(--line);
+  --border-strong:  var(--line-2);
+  --focus-ring:     rgba(59,130,246,0.45);
+}
+
+/* ============================================================
+   LIGHT — "v2 refined" editorial theme
+   Warm paper canvas, single ink-blue accent, calmer semantics.
+   ============================================================ */
+[data-theme="light"] {
+  --bg:        #F4F3EF;
+  --panel:     #FFFFFF;
+  --panel-2:   #FAFAF8;
+  --panel-3:   #F1F0EC;
+  --line:      #E7E5DF;
+  --line-2:    #D9D7CF;
+
+  --ink:       #1A1A18;
+  --muted:     #6E6E68;
+  --faint:     #9A988F;
+  --on-accent: #FFFFFF;
+
+  --accent:    #3056C2;
+  --accent-bright: #4068DC;
+  --accent-soft:   #EAEFFB;
+  --logo-from: #1F8A5B;
+  --logo-to:   #3056C2;
+
+  --pos:       #1F8A5B;   --pos-soft:  #E7F2EB;
+  --neg:       #C0392B;   --neg-soft:  #FAEAE7;
+  --neu:       #B7791F;   --neu-soft:  #F8F0DD;
+  --warn:      #B7791F;   --warn-soft: #F8F0DD;
+
+  --tier-a:    #1F8A5B;   --tier-a-soft: #E7F2EB;
+  --tier-b:    #3056C2;   --tier-b-soft: #EAEFFB;
+  --tier-c:    #B7791F;   --tier-c-soft: #F8F0DD;
+  --tier-x:    #8A887F;   --tier-x-soft: #EFEEE9;
+
+  --surface-hover: #FAFAF8;
+  --focus-ring:    rgba(48,86,194,0.35);
+}

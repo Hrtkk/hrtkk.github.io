@@ -1,0 +1,7 @@
+/* ============================================================
+   FONTS — Conviction
+   Inter for UI text, JetBrains Mono for numerics & symbols.
+   Loaded from Google Fonts CDN. If you have licensed binaries,
+   replace these @import lines with local @font-face rules.
+   ============================================================ */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap");

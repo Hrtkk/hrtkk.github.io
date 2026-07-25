@@ -1,0 +1,23 @@
+---
+// Buttondown embed. The account handle: create at buttondown.com, then update
+// BUTTONDOWN_USERNAME here if you pick a different one.
+const BUTTONDOWN_USERNAME = 'bytescribble';
+const { compact = false } = Astro.props;
+---
+<section class="panel newsletter" aria-label="Newsletter signup">
+  {!compact && <h2>New deep-dives in your inbox.</h2>}
+  {compact && <h2 class="compact-title">Enjoyed this? Get the next one by email.</h2>}
+  <p>No spam. Roughly one long piece a month. Powered by Buttondown.</p>
+  <form
+    action={`https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`}
+    method="post"
+    target="_blank"
+  >
+    <input type="email" name="email" placeholder="you@example.com" required aria-label="Email address" />
+    <button type="submit" class="btn">Subscribe</button>
+  </form>
+</section>
+
+<style>
+  .compact-title { font-size: 22px; }
+</style>

@@ -1,0 +1,86 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PostRow from '../components/PostRow.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { sortedPosts, readingTime } from '../utils.js';
+
+const posts = sortedPosts(await getCollection('blog'));
+const featured = posts.find((p) => p.data.featured) ?? posts[0];
+const latest = posts.filter((p) => p.id !== featured.id).slice(0, 5);
+const featuredMins = readingTime(featured.body);
+---
+<Base>
+  <div class="container">
+    <section class="hero">
+      <p class="kicker">Hritik Kumar · Software Engineer</p>
+      <h1 class="hero-title">Notes on distributed systems, from first&nbsp;principles.</h1>
+      <p class="hero-intro">
+        I build stream-processing pipelines for a living — Flink, Kafka, and the databases
+        underneath them. I write the explanation I wish I'd had: the one that starts at the
+        constraint, not the API. Long-form, diagram-heavy, no sponsored anything.
+      </p>
+    </section>
+
+    <section aria-label="Featured article">
+      <div class="section-label">Featured <span class="label-end">pinned</span></div>
+      <a href={`/blog/${featured.id}/`} class="featured-card panel">
+        <div class="featured-meta">
+          <span class="chip chip-acc">{featured.data.category}</span>
+          <span class="featured-mins mono">{featuredMins} min read</span>
+        </div>
+        <h2 class="featured-title">{featured.data.title}</h2>
+        <p class="featured-excerpt">{featured.data.description}</p>
+        <span class="featured-cta">Read the deep-dive <span aria-hidden="true">→</span></span>
+      </a>
+    </section>
+
+    <section class="latest" aria-label="Latest articles">
+      <div class="section-label">Latest <span class="label-end"><a href="/blog/">All articles →</a></span></div>
+      <div class="latest-list">
+        {latest.map((post) => <PostRow post={post} />)}
+      </div>
+    </section>
+
+    <Newsletter />
+  </div>
+</Base>
+
+<style>
+  .hero { padding: 68px 0 46px; }
+  .hero-title {
+    font-size: clamp(34px, 5vw, 54px);
+    font-weight: 500;
+    letter-spacing: -.01em;
+    max-width: 17em;
+    margin: 14px 0 22px;
+  }
+  .hero-intro { max-width: 46em; color: var(--fg-2); font-size: 18px; margin: 0; }
+
+  .featured-card {
+    display: block;
+    margin-top: 22px;
+    padding: 36px 40px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .15s ease;
+  }
+  .featured-card:hover { border-color: var(--acc-line); color: inherit; }
+  .featured-meta { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+  .featured-mins { font-size: 12.5px; color: var(--fg-3); }
+  .featured-title { font-size: clamp(28px, 4vw, 40px); max-width: 16em; margin-bottom: 12px; }
+  .featured-excerpt { color: var(--fg-2); font-size: 16.5px; max-width: 46em; margin: 0 0 20px; }
+  .featured-cta { font-family: var(--mono); font-size: 13px; color: var(--acc); }
+  .featured-card:hover .featured-cta { color: var(--acc-2); }
+
+  .latest { margin: 64px 0; }
+  .latest-list { margin-top: 20px; }
+  .latest-list :global(.post-row:first-child) { border-top: 0; }
+  .label-end a { color: var(--fg-2); text-decoration: none; }
+  .label-end a:hover { color: var(--acc); }
+
+  @media (max-width: 900px) {
+    .hero { padding: 44px 0 34px; }
+    .featured-card { padding: 26px 22px; }
+  }
+</style>

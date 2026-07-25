@@ -1,0 +1,44 @@
+---
+import Base from './Base.astro';
+const { title, blurb, description } = Astro.props;
+---
+<Base title={title} description={description}>
+  <div class="container game-wrap">
+    <p class="back-link mono"><a href="/playground/">← Playground</a></p>
+    <h1 class="game-title">{title}</h1>
+    <p class="game-blurb">{blurb}</p>
+    <div class="game-hud mono">
+      <span>Score: <strong id="score">0</strong></span>
+      <button class="btn btn-ghost" id="restart">Restart</button>
+    </div>
+    <div class="game-stage panel">
+      <slot />
+    </div>
+    <p class="game-help mono" id="game-help"><slot name="help" /></p>
+  </div>
+</Base>
+
+<style>
+  .game-wrap { max-width: 720px; padding-top: 44px; text-align: center; }
+  .back-link { font-size: 12.5px; text-align: left; margin: 0 0 26px; }
+  .back-link a { color: var(--fg-3); text-decoration: none; }
+  .back-link a:hover { color: var(--acc); }
+  .game-title { font-size: clamp(32px, 5vw, 44px); }
+  .game-blurb { color: var(--fg-2); margin: 10px 0 24px; }
+  .game-hud {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+    margin-bottom: 18px;
+    font-size: 13.5px;
+  }
+  .game-hud strong { color: var(--acc); }
+  .game-stage {
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .game-help { color: var(--fg-3); font-size: 12px; margin-top: 16px; }
+</style>

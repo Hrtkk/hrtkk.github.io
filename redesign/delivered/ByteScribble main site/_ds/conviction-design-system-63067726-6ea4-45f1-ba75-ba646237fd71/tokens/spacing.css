@@ -1,0 +1,32 @@
+/* ============================================================
+   SPACING TOKENS — Conviction
+   A 4px base grid. The terminal is dense: cards pad 16–20px,
+   page gutters sit at 26–30px, grid gaps at 14px.
+   ============================================================ */
+
+:root {
+  --space-0:   0;
+  --space-1:   2px;
+  --space-2:   4px;
+  --space-3:   6px;
+  --space-4:   8px;
+  --space-5:   10px;
+  --space-6:   12px;
+  --space-7:   14px;   /* default grid gap between cards */
+  --space-8:   16px;
+  --space-9:   18px;   /* card inner padding (y) */
+  --space-10:  20px;   /* card inner padding (x) */
+  --space-12:  26px;   /* page top padding */
+  --space-14:  30px;   /* page side gutter */
+  --space-16:  40px;
+  --space-20:  60px;   /* page bottom breathing room */
+
+  /* ---- Semantic spacing ---- */
+  --gap-grid:     var(--space-7);   /* between summary/chart cards */
+  --pad-card:     var(--space-9) var(--space-10);
+  --pad-cell:     12px 14px;        /* table cell */
+  --page-pad:     var(--space-12) var(--space-14) var(--space-20);
+  --content-max:  1280px;           /* main content column cap */
+  --sidebar-w:    228px;
+  --topbar-h:     58px;
+}

@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="404 — Page not found" description="This page doesn't exist.">
+  <div class="container nf-wrap">
+    <p class="kicker">404</p>
+    <h1 class="nf-title">This page got scribbled out.</h1>
+    <svg class="nf-scribble" viewBox="0 0 260 24" width="220" aria-hidden="true">
+      <path d="M4 14 C 40 4, 80 20, 120 12 S 200 6, 256 14" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linecap="round"/>
+      <path d="M18 20 C 60 14, 110 22, 160 17 S 220 13, 248 18" fill="none" stroke="var(--acc)" stroke-width="1.6" stroke-linecap="round" opacity=".45"/>
+    </svg>
+    <p class="nf-line">
+      Either the URL has a typo, or I deleted this page and forgot to tell anyone.
+      Exactly-once delivery is hard — for streams and for links.
+    </p>
+    <p><a href="/" class="btn">Back to the homepage</a></p>
+  </div>
+</Base>
+
+<style>
+  .nf-wrap { padding: 110px 0 40px; max-width: 640px; }
+  .nf-title { font-size: clamp(34px, 5vw, 50px); margin: 14px 0 6px; }
+  .nf-scribble { display: block; margin: 4px 0 22px; overflow: visible; }
+  .nf-line { color: var(--fg-2); font-size: 17.5px; margin: 0 0 28px; }
+</style>

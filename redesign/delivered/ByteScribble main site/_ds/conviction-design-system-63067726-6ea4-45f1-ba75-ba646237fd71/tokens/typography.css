@@ -1,0 +1,53 @@
+/* ============================================================
+   TYPOGRAPHY TOKENS — Conviction
+   Inter for UI; JetBrains Mono for every number, ticker,
+   price, score and timestamp (tabular, monospaced).
+   ============================================================ */
+
+:root {
+  /* ---- Families ---- */
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* ---- Weights ---- */
+  --fw-regular:  400; /* @kind font */
+  --fw-medium:   500; /* @kind font */
+  --fw-semibold: 600; /* @kind font */
+  --fw-bold:     700; /* @kind font */
+
+  /* ---- Type scale (px) ---- */
+  --text-display: 22px;  /* page H1 — "Portfolio", "Stocks" */
+  --text-h2:      18px;  /* section heads inside cards */
+  --text-h3:      15px;  /* card titles */
+  --text-body:    14px;  /* default UI text */
+  --text-sm:      13px;  /* dense table cells, secondary */
+  --text-xs:      12px;  /* meta, exchange tags */
+  --text-2xs:     11px;  /* captions, sources */
+  --text-3xs:     10.5px;/* uppercase table column labels */
+
+  /* ---- Numeric displays (mono) ---- */
+  --num-xl:   40px;  /* big sub-scores */
+  --num-lg:   22px;  /* metric card values, header price */
+  --num-md:   16px;  /* inline prices */
+  --num-sm:   13px;  /* table numerics */
+
+  /* ---- Line heights ---- */
+  --lh-tight:   1.05; /* @kind font */
+  --lh-snug:    1.25; /* @kind font */
+  --lh-normal:  1.45; /* @kind font */
+  --lh-relaxed: 1.6;  /* @kind font */
+
+  /* ---- Letter spacing ---- */
+  --tracking-display: -0.02em;  /* tighten large headings */
+  --tracking-tight:   -0.01em;
+  --tracking-normal:   0;
+  --tracking-label:    0.05em;   /* uppercase micro-labels */
+  --tracking-mono:     0.04em;   /* mono eyebrows / brand kicker */
+
+  /* ---- Semantic roles ---- */
+  --type-page-title:  var(--fw-bold)     var(--text-display)/var(--lh-tight) var(--font-sans);
+  --type-card-title:  var(--fw-semibold) var(--text-h3)/var(--lh-snug)       var(--font-sans);
+  --type-body:        var(--fw-regular)  var(--text-body)/var(--lh-normal)   var(--font-sans);
+  --type-label:       var(--fw-semibold) var(--text-3xs)/1.2                 var(--font-sans);
+  --type-numeric:     var(--fw-semibold) var(--num-sm)/1.2                   var(--font-mono);
+}

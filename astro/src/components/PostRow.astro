@@ -1,0 +1,21 @@
+---
+import { formatDate, readingTime } from '../utils.js';
+const { post, showExcerpt = true } = Astro.props;
+const mins = readingTime(post.body);
+---
+<article
+  class="post-row"
+  data-title={post.data.title.toLowerCase()}
+  data-excerpt={post.data.description.toLowerCase()}
+  data-category={post.data.category}
+>
+  <div class="post-row-main">
+    <h3 class="post-row-title"><a href={`/blog/${post.id}/`}>{post.data.title}</a></h3>
+    {showExcerpt && <p class="post-row-excerpt">{post.data.description}</p>}
+  </div>
+  <div class="post-row-meta">
+    <span class="chip">{post.data.category}</span>
+    <span>{formatDate(post.data.date)}</span>
+    <span>{mins} min</span>
+  </div>
+</article>

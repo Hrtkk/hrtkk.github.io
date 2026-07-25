@@ -1,0 +1,104 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const games = [
+  {
+    href: '/playground/snake/',
+    name: 'Snake',
+    line: 'The original. 20×20 grid, no mercy.',
+    glyph: '⌇',
+    tilt: '-1.1deg'
+  },
+  {
+    href: '/playground/memory/',
+    name: 'Memory',
+    line: 'Sixteen tiles, eight pairs, one goldfish brain.',
+    glyph: '⧉',
+    tilt: '0.8deg'
+  },
+  {
+    href: '/playground/tic-tac-toe/',
+    name: 'Tic-Tac-Toe',
+    line: 'Unbeatable minimax opponent. Sorry.',
+    glyph: '⨯',
+    tilt: '-0.5deg'
+  }
+];
+---
+<Base title="Playground" description="Small browser games — Snake, Memory, and an unbeatable Tic-Tac-Toe. No accounts, no tracking, just canvas.">
+  <div class="container">
+    <header class="play-header">
+      <h1>Playground
+        <svg class="play-arrow" viewBox="0 0 54 26" width="46" aria-hidden="true">
+          <path d="M4 20 C 16 6, 34 4, 48 10" fill="none" stroke="var(--acc)" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M40 6 L 49 10 L 43 17" fill="none" stroke="var(--acc)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </h1>
+      <p class="play-sub">
+        Small browser games I built to procrastinate on writing. No accounts, no scores
+        saved anywhere but your tab.
+      </p>
+    </header>
+
+    <div class="game-grid">
+      {games.map((game) => (
+        <a href={game.href} class="game-card" style={`--tilt:${game.tilt}`}>
+          <span class="game-thumb" aria-hidden="true"><span class="game-glyph">{game.glyph}</span></span>
+          <span class="game-name">{game.name}</span>
+          <span class="game-line">{game.line}</span>
+          <span class="btn game-play">Play <span aria-hidden="true">▸</span></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .play-header { padding: 56px 0 34px; }
+  .play-header h1 {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: clamp(36px, 5vw, 48px);
+  }
+  .play-arrow { overflow: visible; }
+  .play-sub { color: var(--fg-2); margin: 12px 0 0; max-width: 44em; }
+
+  .game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 30px;
+  }
+  .game-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    background: var(--panel);
+    border: 1px solid var(--line-2);
+    border-radius: 14px;
+    padding: 24px;
+    text-decoration: none;
+    color: inherit;
+    transform: rotate(var(--tilt));
+    transition: transform .16s ease, border-color .16s ease;
+  }
+  .game-card:hover {
+    transform: rotate(0deg) translateY(-3px);
+    border-color: var(--acc-line);
+    color: inherit;
+  }
+  .game-thumb {
+    width: 100%;
+    height: 140px;
+    display: grid;
+    place-items: center;
+    border: 1.5px dashed var(--line-2);
+    border-radius: 10px;
+    background: var(--well);
+    margin-bottom: 8px;
+  }
+  .game-glyph { font-size: 30px; color: var(--acc); font-family: var(--mono); }
+  .game-name { font-family: var(--serif); font-size: 24px; font-weight: 500; }
+  .game-line { color: var(--fg-2); font-size: 15px; margin-bottom: 10px; }
+</style>
