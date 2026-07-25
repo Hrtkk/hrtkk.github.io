@@ -24,10 +24,10 @@ In this post, we will look at the main partitioning strategies, how secondary in
 - A common workaround is to add a prefix (for example, a sensor name before the timestamp), but then a query for "everything today" has to fetch from each partition and aggregate the results.
 
 ### Partitioning by hash of key
-- Define a good, consistent hash function and assign a range of *hashes* to each partition.
+- Define a good hash function — deterministic, and spreading keys evenly — and assign a range of *hashes* to each partition.
 - **Downsides**:
   - We lose key-range partitioning, and with it the ability to do efficient range queries — keys are now scattered and the sort order is lost.
-  - Some databases simply do not support range queries on hashed keys (Riak, CouchDB, Voldemort). In MongoDB, a range query has to be sent to all partitions.
+  - Some databases simply do not support range queries on hashed keys (Riak, Couchbase, Voldemort). In MongoDB, a range query has to be sent to all partitions.
 - **Cassandra achieves a compromise** between the two strategies:
   - You can declare a *compound primary key* consisting of several columns, e.g. `(user_id, update_timestamp)`.
   - Only the first part of the key is hashed to determine the partition; the remaining columns are used as a concatenated index for sorting the data inside Cassandra's SSTables.

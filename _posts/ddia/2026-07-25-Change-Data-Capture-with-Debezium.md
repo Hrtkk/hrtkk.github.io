@@ -30,7 +30,7 @@ In this post, we will look at how the Debezium connector works for PostgreSQL, a
 
 ### Things to keep in mind
 - Logical decoding does **not** capture DDL changes (schema changes).
-- Logical decoding replication slots are supported only on **primary** servers. In a cluster, the connector can only run against the active primary — not against hot or warm standby replicas.
+- On PostgreSQL versions before 16, logical decoding replication slots are supported only on **primary** servers — the connector can only run against the active primary, not against hot or warm standby replicas. (PostgreSQL 16 added logical decoding on standbys.)
 - If the primary goes down and another server is promoted, you must adjust the connector configuration before restarting the connector.
 - Because logical decoding replication slots publish changes **during commit** — and not post commit — undesirable side effects can occur:
   1. Publishing uncommitted changes when the primary dies before replication completes.

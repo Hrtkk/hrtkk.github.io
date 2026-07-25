@@ -7,7 +7,7 @@ tags:
   - Blog
   - Flink
 ---
-## The Architecture of Apache Flink
+# The Architecture of Apache Flink
 
 In the previous posts we covered the fundamentals of stream processing. Now let's look at how Apache Flink actually runs your application: how tasks are executed, how data moves between them, what happens when things fail, and how Flink manages state.
 <!--more-->

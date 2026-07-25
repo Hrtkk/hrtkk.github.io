@@ -39,7 +39,7 @@ In this post, we will discuss data replication through three main approaches: **
   - Make the other followers replicate from the new leader.
 
   The steps in practice:
-  1. **Determine that the leader has failed** — usually via timeouts (a proper TTL on heartbeats).
+  1. **Determine that the leader has failed** — usually via heartbeat timeouts.
   2. **Choose a new leader** — through consensus (an election).
   3. **Reconfigure the system** to use the new leader — and if the old leader comes back, it must be demoted to a follower and recognize the new leader.
 
