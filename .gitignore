@@ -13,3 +13,4 @@ astro/node_modules/
 astro/dist/
 astro/.astro/
 redesign/delivered/*.zip
+worker/.wrangler/
