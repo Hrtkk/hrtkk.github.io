@@ -1,0 +1,155 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Breakout"
+  blurb="Forty-five bricks between you and smug satisfaction."
+  description="Play Breakout in the browser — paddle, ball, bricks, three lives."
+>
+  <canvas id="board" width="420" height="460" aria-label="Breakout game board"></canvas>
+  <Fragment slot="help">Mouse / arrow keys / drag to move · click or any key to launch</Fragment>
+</Game>
+
+<style>
+  #board {
+    width: min(420px, 82vw);
+    height: auto;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    touch-action: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const W = canvas.width, H = canvas.height;
+  const COLS = 9, ROWS = 5, BRICK_H = 18, BRICK_GAP = 5, TOP = 46;
+  const BRICK_W = (W - BRICK_GAP * (COLS + 1)) / COLS;
+  const PAD_W = 74, PAD_H = 10, BALL_R = 6;
+  let bricks, paddleX, ball, score, lives, launched, over, won, raf;
+
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function reset() {
+    bricks = Array.from({ length: ROWS }, () => Array(COLS).fill(true));
+    paddleX = (W - PAD_W) / 2;
+    score = 0;
+    lives = 3;
+    over = won = false;
+    scoreEl.textContent = '0';
+    rack();
+    cancelAnimationFrame(raf);
+    loop();
+  }
+
+  function rack() {
+    launched = false;
+    ball = { x: W / 2, y: H - 40, vx: 0, vy: 0 };
+  }
+
+  function launch() {
+    if (launched || over) return;
+    launched = true;
+    const angle = -Math.PI / 2 + (Math.random() * 0.6 - 0.3);
+    ball.vx = Math.cos(angle) * 4.6;
+    ball.vy = Math.sin(angle) * 4.6;
+  }
+
+  function tick() {
+    if (!launched) { ball.x = paddleX + PAD_W / 2; return; }
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    if (ball.x < BALL_R) { ball.x = BALL_R; ball.vx *= -1; }
+    if (ball.x > W - BALL_R) { ball.x = W - BALL_R; ball.vx *= -1; }
+    if (ball.y < BALL_R) { ball.y = BALL_R; ball.vy *= -1; }
+
+    // paddle
+    if (ball.vy > 0 && ball.y > H - 24 - BALL_R && ball.y < H - 14 && ball.x > paddleX - BALL_R && ball.x < paddleX + PAD_W + BALL_R) {
+      const hit = (ball.x - (paddleX + PAD_W / 2)) / (PAD_W / 2);
+      const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.02, 7.5);
+      const angle = -Math.PI / 2 + hit * 1.05;
+      ball.vx = Math.cos(angle) * speed;
+      ball.vy = Math.sin(angle) * speed;
+    }
+
+    // bricks
+    const col = Math.floor((ball.x - BRICK_GAP) / (BRICK_W + BRICK_GAP));
+    const row = Math.floor((ball.y - TOP) / (BRICK_H + BRICK_GAP));
+    if (row >= 0 && row < ROWS && col >= 0 && col < COLS && bricks[row][col]) {
+      bricks[row][col] = false;
+      ball.vy *= -1;
+      score += 10;
+      scoreEl.textContent = String(score);
+      if (bricks.every((r) => r.every((b) => !b))) { won = over = true; }
+    }
+
+    if (ball.y > H + BALL_R) {
+      lives -= 1;
+      if (lives <= 0) over = true;
+      else rack();
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = css('--well');
+    ctx.fillRect(0, 0, W, H);
+    bricks.forEach((rowArr, r) => rowArr.forEach((alive, c) => {
+      if (!alive) return;
+      ctx.fillStyle = r % 2 ? css('--fg-2') : css('--acc');
+      ctx.fillRect(BRICK_GAP + c * (BRICK_W + BRICK_GAP), TOP + r * (BRICK_H + BRICK_GAP), BRICK_W, BRICK_H);
+    }));
+    ctx.fillStyle = css('--fg');
+    ctx.fillRect(paddleX, H - 24, PAD_W, PAD_H);
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fillStyle = css('--acc');
+    ctx.fill();
+    ctx.fillStyle = css('--fg-3');
+    ctx.font = `500 12px ${css('--mono')}`;
+    ctx.textAlign = 'right';
+    ctx.fillText('●'.repeat(Math.max(lives, 0)), W - 12, 22);
+    if (!launched && !over) {
+      ctx.fillStyle = css('--fg-2');
+      ctx.textAlign = 'center';
+      ctx.fillText('click or press any key to launch', W / 2, H - 60);
+    }
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff';
+      ctx.font = `600 22px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(won ? 'Cleared! Restart to go again' : 'Game over — Restart to retry', W / 2, H / 2);
+    }
+  }
+
+  function loop() {
+    tick();
+    draw();
+    if (!over) raf = requestAnimationFrame(loop);
+    else draw();
+  }
+
+  function moveTo(clientX) {
+    const rect = canvas.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * W;
+    paddleX = Math.min(Math.max(x - PAD_W / 2, 0), W - PAD_W);
+  }
+
+  canvas.addEventListener('mousemove', (e) => moveTo(e.clientX));
+  canvas.addEventListener('click', launch);
+  canvas.addEventListener('touchstart', (e) => { moveTo(e.touches[0].clientX); launch(); }, { passive: true });
+  canvas.addEventListener('touchmove', (e) => { moveTo(e.touches[0].clientX); e.preventDefault(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'a') paddleX = Math.max(paddleX - 26, 0);
+    else if (e.key === 'ArrowRight' || e.key === 'd') paddleX = Math.min(paddleX + 26, W - PAD_W);
+    else { launch(); return; }
+    e.preventDefault();
+    launch();
+  });
+
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

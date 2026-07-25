@@ -1,0 +1,129 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Flappy Byte"
+  blurb="Tap to flap. The pipes are unmoved by your feelings."
+  description="A tiny Flappy Bird clone — tap, click, or press space to stay airborne."
+>
+  <canvas id="board" width="340" height="440" aria-label="Flappy Byte game board"></canvas>
+  <Fragment slot="help">Click / tap / space to flap · one point per pipe</Fragment>
+</Game>
+
+<style>
+  #board {
+    width: min(340px, 78vw);
+    height: auto;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    touch-action: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const W = canvas.width, H = canvas.height;
+  const GRAVITY = 0.34, FLAP = -6.2, PIPE_W = 52, GAP = 128, SPEED = 2.2, SPACING = 190;
+  const BIRD_X = 84, BIRD_R = 11;
+  let bird, pipes, score, started, over, raf;
+
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function reset() {
+    bird = { y: H / 2, vy: 0 };
+    pipes = [];
+    for (let i = 0; i < 3; i++) addPipe(W + 80 + i * SPACING);
+    score = 0;
+    started = false;
+    over = false;
+    scoreEl.textContent = '0';
+    cancelAnimationFrame(raf);
+    loop();
+  }
+
+  function addPipe(x) {
+    const margin = 46;
+    const gapY = margin + Math.random() * (H - GAP - margin * 2);
+    pipes.push({ x, gapY, passed: false });
+  }
+
+  function flap() {
+    if (over) return;
+    started = true;
+    bird.vy = FLAP;
+  }
+
+  function tick() {
+    if (!started || over) return;
+    bird.vy += GRAVITY;
+    bird.y += bird.vy;
+    for (const p of pipes) p.x -= SPEED;
+    if (pipes[0].x < -PIPE_W) {
+      pipes.shift();
+      addPipe(pipes[pipes.length - 1].x + SPACING);
+    }
+    for (const p of pipes) {
+      if (!p.passed && p.x + PIPE_W < BIRD_X - BIRD_R) {
+        p.passed = true;
+        score += 1;
+        scoreEl.textContent = String(score);
+      }
+      const inX = BIRD_X + BIRD_R > p.x && BIRD_X - BIRD_R < p.x + PIPE_W;
+      const inGap = bird.y - BIRD_R > p.gapY && bird.y + BIRD_R < p.gapY + GAP;
+      if (inX && !inGap) over = true;
+    }
+    if (bird.y + BIRD_R > H || bird.y - BIRD_R < 0) over = true;
+  }
+
+  function draw() {
+    ctx.fillStyle = css('--well');
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = css('--fg-2');
+    for (const p of pipes) {
+      ctx.fillRect(p.x, 0, PIPE_W, p.gapY);
+      ctx.fillRect(p.x, p.gapY + GAP, PIPE_W, H - p.gapY - GAP);
+    }
+    ctx.beginPath();
+    ctx.arc(BIRD_X, bird.y, BIRD_R, 0, Math.PI * 2);
+    ctx.fillStyle = css('--acc');
+    ctx.fill();
+    ctx.fillStyle = css('--fg');
+    ctx.beginPath();
+    ctx.arc(BIRD_X + 4, bird.y - 3, 2.4, 0, Math.PI * 2);
+    ctx.fill();
+    if (!started && !over) {
+      ctx.fillStyle = css('--fg-2');
+      ctx.font = `500 13px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('tap / click / space to start', W / 2, H / 2 - 70);
+    }
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff';
+      ctx.font = `600 20px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText('Ouch — Restart to retry', W / 2, H / 2);
+    }
+  }
+
+  function loop() {
+    tick();
+    draw();
+    raf = requestAnimationFrame(loop);
+  }
+
+  canvas.addEventListener('mousedown', flap);
+  canvas.addEventListener('touchstart', (e) => { flap(); e.preventDefault(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'ArrowUp' || e.key === 'w') {
+      e.preventDefault();
+      flap();
+    }
+  });
+
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

@@ -1,0 +1,143 @@
+---
+import Game from '../../layouts/Game.astro';
+---
+<Game
+  title="Pong"
+  blurb="You, a wall with opinions, and first to seven."
+  description="Play Pong against a simple AI — mouse, touch, or keyboard, first to seven."
+>
+  <canvas id="board" width="440" height="320" aria-label="Pong game board"></canvas>
+  <Fragment slot="help">Mouse / drag / W-S or arrow keys · you serve from the left</Fragment>
+</Game>
+
+<style>
+  #board {
+    width: min(440px, 82vw);
+    height: auto;
+    border: 1px solid var(--line-2);
+    border-radius: 8px;
+    touch-action: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('board');
+  const ctx = canvas.getContext('2d');
+  const scoreEl = document.getElementById('score');
+  const W = canvas.width, H = canvas.height;
+  const PAD_H = 64, PAD_W = 9, BALL_R = 6, WIN = 7;
+  let you, ai, ball, scores, over, raf, keys = {};
+
+  const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+
+  function reset() {
+    you = ai = (H - PAD_H) / 2;
+    scores = { you: 0, ai: 0 };
+    over = false;
+    serve(1);
+    updateScore();
+    cancelAnimationFrame(raf);
+    loop();
+  }
+
+  function serve(towards) {
+    const angle = (Math.random() * 0.5 - 0.25) * Math.PI;
+    ball = { x: W / 2, y: H / 2, vx: Math.cos(angle) * 4.2 * towards, vy: Math.sin(angle) * 4.2 };
+  }
+
+  function updateScore() {
+    scoreEl.textContent = `${scores.you} — ${scores.ai}`;
+  }
+
+  function tick() {
+    if (keys.up) you -= 5.4;
+    if (keys.down) you += 5.4;
+    you = Math.min(Math.max(you, 0), H - PAD_H);
+
+    // AI tracks with a speed cap so it stays beatable
+    const target = ball.y - PAD_H / 2;
+    ai += Math.min(Math.max(target - ai, -3.6), 3.6);
+    ai = Math.min(Math.max(ai, 0), H - PAD_H);
+
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    if (ball.y < BALL_R) { ball.y = BALL_R; ball.vy *= -1; }
+    if (ball.y > H - BALL_R) { ball.y = H - BALL_R; ball.vy *= -1; }
+
+    const bounce = (padY) => {
+      const hit = (ball.y - (padY + PAD_H / 2)) / (PAD_H / 2);
+      const speed = Math.min(Math.hypot(ball.vx, ball.vy) * 1.04, 8);
+      const dir = ball.vx > 0 ? -1 : 1;
+      const angle = hit * 0.95;
+      ball.vx = Math.cos(angle) * speed * dir;
+      ball.vy = Math.sin(angle) * speed;
+    };
+    if (ball.vx < 0 && ball.x < 16 + PAD_W + BALL_R && ball.x > 16 && ball.y > you - BALL_R && ball.y < you + PAD_H + BALL_R) bounce(you);
+    if (ball.vx > 0 && ball.x > W - 16 - PAD_W - BALL_R && ball.x < W - 16 && ball.y > ai - BALL_R && ball.y < ai + PAD_H + BALL_R) bounce(ai);
+
+    if (ball.x < -BALL_R) { scores.ai += 1; after(-1); }
+    if (ball.x > W + BALL_R) { scores.you += 1; after(1); }
+  }
+
+  function after(towards) {
+    updateScore();
+    if (scores.you >= WIN || scores.ai >= WIN) over = true;
+    else serve(towards);
+  }
+
+  function draw() {
+    ctx.fillStyle = css('--well');
+    ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = css('--line-2');
+    ctx.setLineDash([5, 9]);
+    ctx.beginPath();
+    ctx.moveTo(W / 2, 8);
+    ctx.lineTo(W / 2, H - 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = css('--fg');
+    ctx.fillRect(16, you, PAD_W, PAD_H);
+    ctx.fillStyle = css('--fg-2');
+    ctx.fillRect(W - 16 - PAD_W, ai, PAD_W, PAD_H);
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fillStyle = css('--acc');
+    ctx.fill();
+    if (over) {
+      ctx.fillStyle = 'rgba(0,0,0,.55)';
+      ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = '#fff';
+      ctx.font = `600 22px ${css('--mono')}`;
+      ctx.textAlign = 'center';
+      ctx.fillText(scores.you > scores.ai ? 'You win! Restart for a rematch' : 'The wall wins — Restart to retry', W / 2, H / 2);
+    }
+  }
+
+  function loop() {
+    tick();
+    draw();
+    if (!over) raf = requestAnimationFrame(loop);
+    else draw();
+  }
+
+  function moveTo(clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const y = ((clientY - rect.top) / rect.height) * H;
+    you = Math.min(Math.max(y - PAD_H / 2, 0), H - PAD_H);
+  }
+
+  canvas.addEventListener('mousemove', (e) => moveTo(e.clientY));
+  canvas.addEventListener('touchstart', (e) => moveTo(e.touches[0].clientY), { passive: true });
+  canvas.addEventListener('touchmove', (e) => { moveTo(e.touches[0].clientY); e.preventDefault(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'w') { keys.up = true; e.preventDefault(); }
+    if (e.key === 'ArrowDown' || e.key === 's') { keys.down = true; e.preventDefault(); }
+  });
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'ArrowUp' || e.key === 'w') keys.up = false;
+    if (e.key === 'ArrowDown' || e.key === 's') keys.down = false;
+  });
+
+  document.getElementById('restart').addEventListener('click', reset);
+  reset();
+</script>

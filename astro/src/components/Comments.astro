@@ -1,0 +1,75 @@
+---
+// giscus comments (GitHub Discussions). Until GISCUS.categoryId is filled in
+// (repo Discussions enabled + giscus app installed + id from giscus.app),
+// the section falls back to an email invite instead of a broken widget.
+const GISCUS = {
+  repo: 'Hrtkk/hrtkk.github.io',
+  repoId: 'R_kgDOMY0Tzw',
+  category: 'Announcements',
+  categoryId: ''
+};
+const configured = GISCUS.repoId && GISCUS.categoryId;
+---
+<section class="comments" aria-label="Comments">
+  <div class="section-label">Comments</div>
+  {configured ? (
+    <div
+      id="giscus-mount"
+      data-repo={GISCUS.repo}
+      data-repo-id={GISCUS.repoId}
+      data-category={GISCUS.category}
+      data-category-id={GISCUS.categoryId}
+    ></div>
+  ) : (
+    <p class="comments-soon">
+      Comments are warming up. Meanwhile, thoughts and corrections to
+      <a href="mailto:hritik@bytescribble.com">hritik@bytescribble.com</a> are always welcome.
+    </p>
+  )}
+</section>
+
+<style>
+  .comments {
+    margin-top: 46px;
+    padding-top: 34px;
+    border-top: 1px solid var(--line);
+  }
+  .comments-soon { color: var(--fg-2); font-size: 15.5px; margin: 14px 0 0; }
+  .comments-soon a { color: var(--acc); }
+</style>
+
+<script>
+  const mount = document.getElementById('giscus-mount');
+  if (mount) {
+    const theme = () =>
+      document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+
+    const s = document.createElement('script');
+    s.src = 'https://giscus.app/client.js';
+    s.async = true;
+    s.crossOrigin = 'anonymous';
+    Object.entries({
+      repo: mount.dataset.repo,
+      'repo-id': mount.dataset.repoId,
+      category: mount.dataset.category,
+      'category-id': mount.dataset.categoryId,
+      mapping: 'pathname',
+      strict: '0',
+      'reactions-enabled': '1',
+      'emit-metadata': '0',
+      'input-position': 'bottom',
+      theme: theme(),
+      lang: 'en'
+    }).forEach(([k, v]) => s.setAttribute(`data-${k}`, v));
+    mount.appendChild(s);
+
+    // Follow the site's theme toggle
+    new MutationObserver(() => {
+      const frame = document.querySelector('iframe.giscus-frame');
+      frame?.contentWindow?.postMessage(
+        { giscus: { setConfig: { theme: theme() } } },
+        'https://giscus.app'
+      );
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+  }
+</script>

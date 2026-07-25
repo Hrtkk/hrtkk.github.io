@@ -22,10 +22,31 @@ const games = [
     line: 'Unbeatable minimax opponent. Sorry.',
     glyph: '⨯',
     tilt: '-0.5deg'
+  },
+  {
+    href: '/playground/breakout/',
+    name: 'Breakout',
+    line: 'Forty-five bricks between you and smug satisfaction.',
+    glyph: '▤',
+    tilt: '0.6deg'
+  },
+  {
+    href: '/playground/pong/',
+    name: 'Pong',
+    line: 'You, a wall with opinions, and first to seven.',
+    glyph: '⫾⫽',
+    tilt: '-0.9deg'
+  },
+  {
+    href: '/playground/flappy/',
+    name: 'Flappy Byte',
+    line: 'Tap to flap. The pipes are unmoved by your feelings.',
+    glyph: '◔',
+    tilt: '0.7deg'
   }
 ];
 ---
-<Base title="Playground" description="Small browser games — Snake, Memory, and an unbeatable Tic-Tac-Toe. No accounts, no tracking, just canvas.">
+<Base title="Playground" description="Small browser games — Snake, Memory, Tic-Tac-Toe, Breakout, Pong, and Flappy Byte. No accounts, no tracking, just canvas.">
   <div class="container">
     <header class="play-header">
       <h1>Playground
@@ -36,7 +57,8 @@ const games = [
       </h1>
       <p class="play-sub">
         Small browser games I built to procrastinate on writing. No accounts, no scores
-        saved anywhere but your tab.
+        saved anywhere but your tab. Found a bug or want another game?
+        <a href="mailto:hritik@bytescribble.com">Tell me</a>.
       </p>
     </header>
 
