@@ -10,7 +10,7 @@ title: ByteScribble
       <p class="hero-subtitle">Exploring the Art of Software Engineering</p>
       <div class="hero-cta">
         <a href="/blogs" class="primary-button">Read Articles</a>
-        <a href="/about" class="secondary-button">About Me</a>
+        <a href="/about-me/" class="secondary-button">About Me</a>
       </div>
     </div>
     <div class="hero-animation">
@@ -62,10 +62,14 @@ title: ByteScribble
     <div class="newsletter-content">
       <h2>Stay Updated</h2>
       <p>Get the latest articles and insights delivered to your inbox</p>
-      <form class="newsletter-form" id="newsletter-form">
-        <input type="email" placeholder="Enter your email" required>
+      {% if site.buttondown_username %}
+      <form class="newsletter-form" action="https://buttondown.com/api/emails/embed-subscribe/{{ site.buttondown_username }}" method="post" target="_blank">
+        <input type="email" name="email" placeholder="Enter your email" required>
         <button type="submit" class="primary-button">Subscribe</button>
       </form>
+      {% else %}
+      <a href="/feed.xml" class="primary-button">Subscribe via RSS</a>
+      {% endif %}
     </div>
   </section>
 </div>
@@ -82,18 +86,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     document.querySelectorAll('.post-card, .topic-card').forEach((el) => observer.observe(el));
-
-    // Newsletter form handling
-    const form = document.getElementById('newsletter-form');
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = this.querySelector('input[type="email"]').value;
-            // Add your newsletter subscription logic here
-            alert('Thanks for subscribing! We\'ll be in touch soon.');
-            this.reset();
-        });
-    }
 });
 </script>
 

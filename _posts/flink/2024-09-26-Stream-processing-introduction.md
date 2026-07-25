@@ -4,7 +4,7 @@ date:   2024-09-26 14:25:27 +0530
 author: Hritik Kumar
 category: blog
 tags:
-- Featured
+  - Featured
   - Blog
   - Flink
 ---
@@ -16,7 +16,7 @@ As companies strive to make faster, data-driven decisions, stream processing pla
 <!--more-->
 
 ---
-***Stream Processing*** refers to continuous, real-time processing of data as it is generated, rather than storing it and processing later in betches. Unlike traditional batch processing, where data is accumulated over time, stream processing focuses on near-instantaneous insights and reacts.
+***Stream Processing*** refers to continuous, real-time processing of data as it is generated, rather than storing it and processing later in batches. Unlike traditional batch processing, where data is accumulated over time, stream processing focuses on near-instantaneous insights and reacts.
 
 ### Key Features:
 - **Real Time data processing**

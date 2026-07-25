@@ -1,24 +1,30 @@
 title: ByteScribble
 author: Hritik Kumar
 email: hritikkumar.rd@gmail.com
-description: >- # this means to ignore newlines until "baseurl:"
-  ByteScribble is place where you can find insightful articles and comprehensive 
-  guides on software architecture, system design, and interview preparation.
-  Whether you're a seasoned developer, an aspiring architect, or someone preparing for technical
-  interviews, you'll find valuable content tailored to help you succeed in your career.
+tagline: Software Architecture, System Design & Interview Prep
+description: >- # this means to ignore newlines until "slogan:"
+  Insightful articles and comprehensive guides on software architecture,
+  system design, and technical interview preparation — for developers,
+  aspiring architects, and interview candidates.
 slogan: >- # this means to ignore newlines until "baseurl:"
   Let's join our hand and build a community of tech enthusiasts and professionals as
   we scribble our way through the fascinating world of software development.
   Stay ahead of the curve with ByteScribble!
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: "@43ba76670139474"
+url: "https://bytescribble.com" # the base hostname & protocol for your site
 github_username:  Hrtkk
+lang: en
+timezone: Asia/Kolkata
+# Create a free account at https://buttondown.com, then uncomment with your
+# username to switch the homepage subscribe box from RSS to email signup:
+# buttondown_username: your-username
 
 # Build settings
 plugins:
   - jekyll-feed
   - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
 markdown: kramdown
 
