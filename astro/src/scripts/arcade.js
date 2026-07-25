@@ -1,7 +1,7 @@
 // Shared player identity + per-game leaderboards for the playground.
 // localStorage always works as the local cache/fallback; when API is set
 // to the deployed Cloudflare Worker URL, boards become global.
-const API = ''; // e.g. 'https://bytescribble-leaderboard.<account>.workers.dev'
+const API = 'https://api.bytescribble.com';
 const PLAYER_KEY = 'bs-player';
 const SCORES_KEY = 'bs-scores-v1';
 const KEEP = 25;
