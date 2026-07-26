@@ -9,6 +9,7 @@ const year = new Date().getFullYear();
     </div>
     <nav class="footer-nav" aria-label="Footer">
       <a href="/blog/">Blog</a>
+      <a href="/projects/">Projects</a>
       <a href="/playground/">Playground</a>
       <a href="/scribbles/">Scribbles</a>
       <a href="/about/">About</a>
@@ -16,6 +17,12 @@ const year = new Date().getFullYear();
       <a href="https://github.com/Hrtkk" rel="me">GitHub</a>
       <a href="mailto:hritik@bytescribble.com">Feedback</a>
     </nav>
+  </div>
+  <div class="container footer-sites" aria-label="Sister sites">
+    <span class="footer-sites-label">Also on this domain</span>
+    <a href="https://notes.bytescribble.com">Notes</a>
+    <a href="https://chats.bytescribble.com">Bolo (voice)</a>
+    <a href="https://dashboard.bytescribble.com">Scribble Board</a>
   </div>
 </footer>
 
@@ -53,4 +60,28 @@ const year = new Date().getFullYear();
     text-decoration: none;
   }
   .footer-nav a:hover { color: var(--acc); }
+
+  .footer-sites {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .footer-sites-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--fg-3);
+  }
+  .footer-sites a {
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--fg-2);
+    text-decoration: none;
+  }
+  .footer-sites a:hover { color: var(--acc); }
 </style>

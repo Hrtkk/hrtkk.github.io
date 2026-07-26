@@ -1,0 +1,121 @@
+---
+import Base from '../layouts/Base.astro';
+
+const projects = [
+  {
+    name: 'ByteScribble Notes',
+    href: 'https://notes.bytescribble.com',
+    tag: 'notes.bytescribble.com',
+    blurb:
+      'Free chapter-wise revision notes. Two complete CA Intermediate papers plus Costing, Class 10 CBSE, and open MBBS and UPSC corners — each chapter with a 30-second summary, definitions, exam traps and a quick-revision mode.',
+    stats: ['64 chapters', 'CA Inter · CBSE · MBBS · UPSC', 'Free, no signup'],
+    accent: 'teal',
+    glyph: '§'
+  },
+  {
+    name: 'Bolo',
+    href: 'https://chats.bytescribble.com',
+    tag: 'chats.bytescribble.com',
+    blurb:
+      'A voice study companion for the notes. Ask out loud in English, हिन्दी or Hinglish and hear the answer back — grounded in the notes and citing the chapter it came from. Speech in, speech out, transcript on the side.',
+    stats: ['Voice + text', 'EN · HI · Hinglish', 'Answers cite their source'],
+    accent: 'amber',
+    glyph: '◉'
+  },
+  {
+    name: 'Scribble Board',
+    href: 'https://dashboard.bytescribble.com',
+    tag: 'dashboard.bytescribble.com',
+    blurb:
+      'A drawing board for no reason at all. Ink that tapers with your speed, mirror modes that turn any doodle into a mandala, and a PNG export button. Nothing is saved anywhere.',
+    stats: ['Draw anything', 'Mandala mirrors', 'Exports PNG'],
+    accent: 'violet',
+    glyph: '✎'
+  }
+];
+---
+<Base
+  title="Projects"
+  description="The ByteScribble family: revision notes, a voice study companion, and a drawing board."
+>
+  <div class="container">
+    <header class="proj-header">
+      <p class="kicker">Projects</p>
+      <h1 class="proj-title">Things I've built around this domain.</h1>
+      <p class="proj-sub">
+        Each one is its own site, free to use, and built in the open. No accounts, no tracking
+        beyond basic analytics, nothing behind a paywall.
+      </p>
+    </header>
+
+    <div class="proj-list">
+      {projects.map((p) => (
+        <a href={p.href} class:list={['proj-card', 'panel', p.accent]}>
+          <span class="proj-glyph" aria-hidden="true">{p.glyph}</span>
+          <div class="proj-body">
+            <div class="proj-top">
+              <h2 class="proj-name">{p.name}</h2>
+              <span class="proj-domain mono">{p.tag}</span>
+            </div>
+            <p class="proj-blurb">{p.blurb}</p>
+            <div class="proj-stats">
+              {p.stats.map((s) => <span class="chip">{s}</span>)}
+            </div>
+          </div>
+          <span class="proj-go mono" aria-hidden="true">Open →</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .proj-header { padding: 56px 0 34px; max-width: 46em; }
+  .proj-title { font-size: clamp(32px, 5vw, 46px); margin: 14px 0 16px; }
+  .proj-sub { color: var(--fg-2); font-size: 17.5px; margin: 0; }
+
+  .proj-list { display: flex; flex-direction: column; gap: 16px; margin-bottom: 40px; }
+
+  .proj-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 24px;
+    padding: 26px 28px;
+    text-decoration: none;
+    color: inherit;
+    border-left: 3px solid var(--line-2);
+    transition: border-color .15s ease, transform .15s ease;
+  }
+  .proj-card:hover { color: inherit; transform: translateY(-2px); border-color: var(--acc-line); }
+  .proj-card.teal { border-left-color: #0F8B72; }
+  .proj-card.amber { border-left-color: var(--acc); }
+  .proj-card.violet { border-left-color: #A78BFA; }
+
+  .proj-glyph {
+    display: grid;
+    place-items: center;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    background: var(--well);
+    border: 1px solid var(--line);
+    font-family: var(--serif);
+    font-size: 24px;
+    color: var(--acc);
+    flex-shrink: 0;
+  }
+
+  .proj-top { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .proj-name { font-size: 25px; }
+  .proj-domain { font-size: 12px; color: var(--fg-3); }
+  .proj-blurb { color: var(--fg-2); font-size: 15.8px; margin: 0 0 14px; max-width: 54em; }
+  .proj-stats { display: flex; flex-wrap: wrap; gap: 7px; }
+  .proj-go { font-size: 13px; color: var(--acc); white-space: nowrap; }
+
+  @media (max-width: 780px) {
+    .proj-card { grid-template-columns: auto minmax(0, 1fr); gap: 16px; padding: 20px 20px; }
+    .proj-go { display: none; }
+    .proj-glyph { width: 42px; height: 42px; font-size: 20px; }
+  }
+</style>

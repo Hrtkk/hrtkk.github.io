@@ -11,3 +11,9 @@ routes = [
 [[kv_namespaces]]
 binding = "SCORES"
 id = "b9374e5dde514fa299c06d614562fe25"
+
+# Workers AI powers /chat for chats.bytescribble.com (Bolo).
+# Free tier includes a daily neuron allowance; the chat client falls back to
+# a retrieval-only answer if this is unavailable.
+[ai]
+binding = "AI"
