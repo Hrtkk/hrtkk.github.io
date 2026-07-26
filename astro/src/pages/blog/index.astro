@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostRow from '../../components/PostRow.astro';
 import { sortedPosts } from '../../utils.js';
+import { PILLARS } from '../../pillars.js';
 
 const posts = sortedPosts(await getCollection('blog'));
 const categories = [...new Set(posts.map((p) => p.data.category))];
@@ -22,6 +23,14 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
           <button class="chip active" data-cat="All">All</button>
           {categories.map((cat) => <button class="chip" data-cat={cat}>{cat}</button>)}
         </div>
+        <p class="topics-line mono">
+          Topics:
+          {PILLARS.map((p, i) => (
+            <>
+              <a href={`/topics/${p.slug}/`}>{p.label}</a>{i < PILLARS.length - 1 && ' · '}
+            </>
+          ))}
+        </p>
       </div>
     </header>
 
@@ -60,6 +69,9 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
   }
   .search-field input::placeholder { color: var(--fg-3); }
   .chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 8px; }
+  .topics-line { font-size: 12.5px; color: var(--fg-3); margin: 14px 0 0; }
+  .topics-line a { color: var(--fg-2); text-decoration: none; }
+  .topics-line a:hover { color: var(--acc); }
   .blog-list { margin-top: 18px; }
   .empty-note { color: var(--fg-2); padding: 34px 0; }
   .linklike {

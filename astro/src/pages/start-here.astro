@@ -1,0 +1,127 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Newsletter from '../components/Newsletter.astro';
+import { sortedPosts, readingTime } from '../utils.js';
+import { PILLARS } from '../pillars.js';
+
+const posts = sortedPosts(await getCollection('blog'));
+const best = [
+  posts.find((p) => p.data.featured),
+  ...posts.filter((p) => !p.data.featured)
+].filter(Boolean).slice(0, 4);
+---
+<Base title="Start Here" description="New to ByteScribble? Who this is for, what to read first, and where everything lives.">
+  <div class="container start-wrap">
+    <header class="start-header">
+      <h1>Start here.</h1>
+      <p class="start-intro">
+        I'm Hritik — a software engineer who makes complex tech simple. ByteScribble is
+        where the written versions of everything live. It runs on two tracks, and you
+        probably belong to one of them.
+      </p>
+    </header>
+
+    <div class="track-grid">
+      <div class="panel track-card">
+        <p class="track-label mono">Track 1 · For developers</p>
+        <h2>Deep Tech</h2>
+        <p>
+          System design, distributed systems, software craft, and AI agents — long-form,
+          diagram-heavy deep-dives that start at the constraint, not the API. If you're
+          preparing for interviews or growing toward senior/architect roles, start with
+          <a href="/topics/system-design/">System Design</a> or
+          <a href="/topics/ai-agents/">AI &amp; Agents</a>.
+        </p>
+      </div>
+      <div class="panel track-card">
+        <p class="track-label mono">Track 2 · For everyone</p>
+        <h2>Everyday AI</h2>
+        <p>
+          Practical AI for daily life — real tasks, free tools, exactly which buttons to
+          press, no jargon. This track lives mostly in short videos, with companion posts
+          under <a href="/topics/everyday-ai/">Everyday AI</a>.
+        </p>
+      </div>
+    </div>
+
+    <section aria-label="Best starting points">
+      <div class="section-label">Good first reads</div>
+      <ul class="best-list">
+        {best.map((p) => (
+          <li>
+            <a href={`/blog/${p.id}/`}>{p.data.title}</a>
+            <span class="best-meta mono">{readingTime(p.body)} min</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <section aria-label="Topics">
+      <div class="section-label">Browse by topic</div>
+      <div class="pillar-row">
+        {PILLARS.map((p) => <a class="chip" href={`/topics/${p.slug}/`}>{p.label}</a>)}
+      </div>
+    </section>
+
+    <p class="manaska-note">
+      One more thing: I'm building <strong>Manaska</strong>, an adaptive learning platform —
+      and documenting the real architecture decisions in
+      <a href="/topics/build-in-public/">Build in Public</a>.
+    </p>
+
+    <Newsletter />
+  </div>
+</Base>
+
+<style>
+  .start-wrap { max-width: 860px; }
+  .start-header { padding: 64px 0 10px; }
+  .start-header h1 { font-size: clamp(36px, 5vw, 52px); margin-bottom: 16px; }
+  .start-intro { color: var(--fg-2); font-size: 18px; max-width: 44em; }
+
+  .track-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 30px 0 50px;
+  }
+  .track-card { padding: 26px 28px; }
+  .track-label {
+    font-size: 11.5px;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+    color: var(--acc);
+    margin: 0 0 10px;
+  }
+  .track-card h2 { font-size: 24px; margin-bottom: 10px; }
+  .track-card p { color: var(--fg-2); margin: 0; line-height: 1.65; }
+
+  .best-list { list-style: none; padding: 0; margin: 16px 0 44px; }
+  .best-list li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 12px 0;
+    border-top: 1px solid var(--line);
+  }
+  .best-list li:first-child { border-top: 0; }
+  .best-list a {
+    font-family: var(--serif);
+    font-size: 19px;
+    color: var(--fg);
+    text-decoration: none;
+  }
+  .best-list a:hover { color: var(--acc); }
+  .best-meta { font-size: 12px; color: var(--fg-3); flex-shrink: 0; }
+
+  .pillar-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 44px; }
+  .pillar-row .chip { text-decoration: none; }
+
+  .manaska-note { color: var(--fg-2); margin: 0 0 40px; }
+
+  @media (max-width: 720px) {
+    .track-grid { grid-template-columns: 1fr; }
+  }
+</style>

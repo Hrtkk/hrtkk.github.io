@@ -7,7 +7,7 @@ const { compact = false } = Astro.props;
 <section class="panel newsletter" aria-label="Newsletter signup">
   {!compact && <h2>New deep-dives in your inbox.</h2>}
   {compact && <h2 class="compact-title">Enjoyed this? Get the next one by email.</h2>}
-  <p>No spam. Roughly one long piece a month. Powered by Buttondown.</p>
+  <p>One diagram + one practical AI tip, every two weeks. No spam. Powered by Buttondown.</p>
   <form
     action={`https://buttondown.com/api/emails/embed-subscribe/${BUTTONDOWN_USERNAME}`}
     method="post"

@@ -1,6 +1,18 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
+// Strategic content pillars — see src/pillars.js for labels/blurbs.
+// Every post belongs to exactly one pillar; `category` stays as the
+// fine-grained topic shown on chips (e.g. "Kafka", "DDIA").
+const PILLAR_SLUGS = [
+  'system-design',
+  'software-craft',
+  'ai-agents',
+  'everyday-ai',
+  'learning',
+  'build-in-public'
+] as const;
+
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './src/content/blog' }),
   schema: z.object({
@@ -8,6 +20,8 @@ const blog = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     category: z.string(),
+    pillar: z.enum(PILLAR_SLUGS).default('system-design'),
+    videoId: z.string().optional(), // YouTube ID — renders a video embed at the top of the post
     featured: z.boolean().default(false),
     author: z.string().default('Hritik Kumar')
   })

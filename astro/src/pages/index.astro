@@ -14,11 +14,14 @@ const featuredMins = readingTime(featured.body);
   <div class="container">
     <section class="hero">
       <p class="kicker">Hritik Kumar · Software Engineer</p>
-      <h1 class="hero-title">Notes on distributed systems, from first&nbsp;principles.</h1>
+      <h1 class="hero-title">Complex tech, made&nbsp;simple.</h1>
       <p class="hero-intro">
-        I build stream-processing pipelines for a living — Flink, Kafka, and the databases
-        underneath them. I write the explanation I wish I'd had: the one that starts at the
-        constraint, not the API. Long-form, diagram-heavy, no sponsored anything.
+        Deep engineering for developers — system design, distributed systems, and AI agents —
+        and practical AI anyone can use. I write the explanation I wish I'd had: the one that
+        starts at the constraint, not the API. Long-form, diagram-heavy, no sponsored anything.
+      </p>
+      <p class="hero-links mono">
+        <a href="/start-here/">New here? Start here →</a>
       </p>
     </section>
 
@@ -56,6 +59,9 @@ const featuredMins = readingTime(featured.body);
     margin: 14px 0 22px;
   }
   .hero-intro { max-width: 46em; color: var(--fg-2); font-size: 18px; margin: 0; }
+  .hero-links { margin: 18px 0 0; font-size: 13px; }
+  .hero-links a { color: var(--acc); text-decoration: none; }
+  .hero-links a:hover { color: var(--acc-2); }
 
   .featured-card {
     display: block;
