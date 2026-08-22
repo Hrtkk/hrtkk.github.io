@@ -2,10 +2,11 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import Newsletter from '../components/Newsletter.astro';
-import { sortedPosts, readingTime } from '../utils.js';
+import { sortedPosts, publishedPosts, readingTime } from '../utils.js';
 import { PILLARS } from '../pillars.js';
 
-const posts = sortedPosts(await getCollection('blog'));
+const posts = sortedPosts(publishedPosts(await getCollection('blog')));
+const activePillars = PILLARS.filter((pillar) => posts.some((post) => post.data.pillar === pillar.slug));
 const best = [
   posts.find((p) => p.data.featured),
   ...posts.filter((p) => !p.data.featured)
@@ -18,7 +19,7 @@ const best = [
       <p class="start-intro">
         I'm Hritik — a software engineer who makes complex tech simple. ByteScribble is
         where the written versions of everything live. It runs on two tracks, and you
-        probably belong to one of them.
+        currently lives.
       </p>
     </header>
 
@@ -27,20 +28,18 @@ const best = [
         <p class="track-label mono">Track 1 · For developers</p>
         <h2>Deep Tech</h2>
         <p>
-          System design, distributed systems, software craft, and AI agents — long-form,
-          diagram-heavy deep-dives that start at the constraint, not the API. If you're
-          preparing for interviews or growing toward senior/architect roles, start with
-          <a href="/topics/system-design/">System Design</a> or
-          <a href="/topics/ai-agents/">AI &amp; Agents</a>.
+          The published archive begins with distributed systems: Kafka, Flink, data
+          replication, and partitioning. Start with
+          <a href="/topics/distributed-systems/">Distributed Systems</a>.
         </p>
       </div>
       <div class="panel track-card">
         <p class="track-label mono">Track 2 · For everyone</p>
-        <h2>Everyday AI</h2>
+        <h2>Current research</h2>
         <p>
-          Practical AI for daily life — real tasks, free tools, exactly which buttons to
-          press, no jargon. This track lives mostly in short videos, with companion posts
-          under <a href="/topics/everyday-ai/">Everyday AI</a>.
+          New work will focus on AI and ML, speech and audio, video, multimodal systems,
+          context and memory, plus the research behind Manaska. Those areas will become
+          browsable as the first original posts are published.
         </p>
       </div>
     </div>
@@ -60,14 +59,17 @@ const best = [
     <section aria-label="Topics">
       <div class="section-label">Browse by topic</div>
       <div class="pillar-row">
-        {PILLARS.map((p) => <a class="chip" href={`/topics/${p.slug}/`}>{p.label}</a>)}
+        {PILLARS.map((p) => activePillars.includes(p)
+          ? <a class="chip" href={`/topics/${p.slug}/`}>{p.label}</a>
+          : <span class="chip future-chip">{p.label}</span>
+        )}
       </div>
     </section>
 
     <p class="manaska-note">
       One more thing: I'm building <strong>Manaska</strong>, an adaptive learning platform —
       and documenting the real architecture decisions in
-      <a href="/topics/build-in-public/">Build in Public</a>.
+      future notes will appear under <strong>Manaska Research</strong>.
     </p>
 
     <Newsletter />
@@ -118,6 +120,7 @@ const best = [
 
   .pillar-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 44px; }
   .pillar-row .chip { text-decoration: none; }
+  .future-chip { opacity: .62; }
 
   .manaska-note { color: var(--fg-2); margin: 0 0 40px; }
 

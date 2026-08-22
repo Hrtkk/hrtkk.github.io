@@ -3,6 +3,9 @@ title: "Fundamentals on Stream Processing"
 description: "Time semantics, watermarks, state, and what consistency actually means when a stream job fails."
 date: 2024-09-27 14:25:27 +0530
 category: "Stream Processing"
+pillar: "distributed-systems"
+tags: ["stream-processing", "watermarks", "state", "fault-tolerance"]
+status: "archived"
 ---
 
 ## Fundamentals on Stream Processing: Part 03

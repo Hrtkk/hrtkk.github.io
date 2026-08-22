@@ -3,6 +3,9 @@ title: "Stream Processing: Introduction"
 description: "Event time vs processing time, windows, and the mental shift from tables to unbounded logs."
 date: 2024-09-26 14:25:27 +0530
 category: "Stream Processing"
+pillar: "distributed-systems"
+tags: ["stream-processing"]
+status: "archived"
 ---
 
 In the era of real-time applications, stream processing has emerged as a critical component of modern software architecture. Today, nearly every product or service incorporates some form of stream processing pipeline. From analyzing live data and monitoring system performance to processing financial transactions and tracking user activities on websites, stream processing has become an essential driver of business growth.

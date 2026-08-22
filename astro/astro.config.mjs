@@ -1,6 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+const ARCHIVED_POSTS = new Set([
+  '/blog/introduction-to-apache-kafka/',
+  '/blog/stream-processing-introduction/',
+  '/blog/stream-processing-fundamentals-part-one/',
+  '/blog/stream-processing-fundamentals-part-two/',
+  '/blog/archive/'
+]);
+
 export default defineConfig({
   site: 'https://bytescribble.com',
   trailingSlash: 'ignore',
@@ -17,7 +25,7 @@ export default defineConfig({
     '/blogs/': '/blog/',
     '/about-me/': '/about/'
   },
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !ARCHIVED_POSTS.has(new URL(page).pathname) })],
   markdown: {
     shikiConfig: {
       themes: { light: 'vitesse-light', dark: 'vitesse-dark' },

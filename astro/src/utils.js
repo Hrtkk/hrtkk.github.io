@@ -10,3 +10,11 @@ export function formatDate(date) {
 export function sortedPosts(posts) {
   return [...posts].sort((a, b) => b.data.date - a.data.date);
 }
+
+export function publishedPosts(posts) {
+  return posts.filter((post) => post.data.status === 'published');
+}
+
+export function archivedPosts(posts) {
+  return posts.filter((post) => post.data.status === 'archived');
+}

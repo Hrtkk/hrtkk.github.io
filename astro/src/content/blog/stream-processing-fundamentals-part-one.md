@@ -3,6 +3,9 @@ title: "Fundamentals on Stream Processing"
 description: "Dataflow graphs, parallelism, and the exchange strategies that move records between operators."
 date: 2024-09-27 14:25:27 +0530
 category: "Stream Processing"
+pillar: "distributed-systems"
+tags: ["stream-processing", "windows", "state"]
+status: "archived"
 ---
 
 ## Fundamentals on Stream Processing: Part 02

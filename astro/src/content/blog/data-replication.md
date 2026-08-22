@@ -3,6 +3,9 @@ title: "Data Replication: Single-Leader, Multi-Leader, and Leaderless"
 description: "Three ways to keep copies in sync, and the failure mode each one is secretly optimising for."
 date: 2026-07-25 08:00:00 +0530
 category: "DDIA"
+pillar: "distributed-systems"
+tags: ["ddia", "replication", "distributed-databases"]
+status: "published"
 ---
 
 Replication means keeping a copy of the same data on multiple machines. We do it to keep data close to users, to keep the system available when nodes fail, and to scale out reads. The hard part is not copying the data — it's keeping the copies consistent while the data keeps changing.

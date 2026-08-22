@@ -3,6 +3,9 @@ title: "Introduction to Apache Kafka"
 description: "Logs, partitions, consumer groups, and why the broker deliberately does so little."
 date: 2026-07-25 06:00:00 +0530
 category: "Kafka"
+pillar: "distributed-systems"
+tags: ["kafka", "event-streaming"]
+status: "archived"
 ---
 
 Apache Kafka is a powerful, open-source distributed event streaming platform designed to handle real-time data feeds. Originally developed at LinkedIn, Kafka has grown to become a popular tool for building data pipelines, real-time analytics, and messaging systems. It enables applications to publish, process, and consume streams of data in a distributed and scalable manner.

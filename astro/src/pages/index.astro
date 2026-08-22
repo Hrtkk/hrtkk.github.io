@@ -3,9 +3,9 @@ import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PostRow from '../components/PostRow.astro';
 import Newsletter from '../components/Newsletter.astro';
-import { sortedPosts, readingTime } from '../utils.js';
+import { sortedPosts, publishedPosts, readingTime } from '../utils.js';
 
-const posts = sortedPosts(await getCollection('blog'));
+const posts = sortedPosts(publishedPosts(await getCollection('blog')));
 const featured = posts.find((p) => p.data.featured) ?? posts[0];
 const latest = posts.filter((p) => p.id !== featured.id).slice(0, 5);
 const featuredMins = readingTime(featured.body);
@@ -16,9 +16,9 @@ const featuredMins = readingTime(featured.body);
       <p class="kicker">Hritik Kumar · Software Engineer</p>
       <h1 class="hero-title">Complex tech, made&nbsp;simple.</h1>
       <p class="hero-intro">
-        Deep engineering for developers — system design, distributed systems, and AI agents —
-        and practical AI anyone can use. I write the explanation I wish I'd had: the one that
-        starts at the constraint, not the API. Long-form, diagram-heavy, no sponsored anything.
+        Research notes on AI and ML, speech and audio, video, multimodal systems, context,
+        memory, and the distributed systems underneath them. I write the explanation I wish
+        I'd had: the one that starts at the constraint, not the API.
       </p>
       <p class="hero-links mono">
         <a href="/start-here/">New here? Start here →</a>

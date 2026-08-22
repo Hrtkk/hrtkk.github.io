@@ -2,13 +2,17 @@
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostRow from '../../components/PostRow.astro';
-import { sortedPosts } from '../../utils.js';
+import { sortedPosts, publishedPosts, archivedPosts } from '../../utils.js';
 import { PILLARS } from '../../pillars.js';
 
-const posts = sortedPosts(await getCollection('blog'));
+const allPosts = await getCollection('blog');
+const posts = sortedPosts(publishedPosts(allPosts));
+const archivedCount = archivedPosts(allPosts).length;
 const categories = [...new Set(posts.map((p) => p.data.category))];
+const activePillars = PILLARS.filter((pillar) => posts.some((post) => post.data.pillar === pillar.slug));
+const futurePillars = PILLARS.filter((pillar) => !activePillars.includes(pillar));
 ---
-<Base title="Blog" description="All ByteScribble deep-dives: stream processing, Kafka, database internals, and system design.">
+<Base title="Blog" description="ByteScribble research notes on AI, multimodal systems, context, memory, and distributed systems.">
   <div class="container">
     <header class="blog-header">
       <h1>Blog</h1>
@@ -24,12 +28,15 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
           {categories.map((cat) => <button class="chip" data-cat={cat}>{cat}</button>)}
         </div>
         <p class="topics-line mono">
-          Topics:
-          {PILLARS.map((p, i) => (
+          Published areas:
+          {activePillars.map((p, i) => (
             <>
-              <a href={`/topics/${p.slug}/`}>{p.label}</a>{i < PILLARS.length - 1 && ' · '}
+              <a href={`/topics/${p.slug}/`}>{p.label}</a>{i < activePillars.length - 1 && ' · '}
             </>
           ))}
+        </p>
+        <p class="topics-line mono">
+          Research directions: {futurePillars.map((p) => p.label).join(' · ')}
         </p>
       </div>
     </header>
@@ -40,6 +47,11 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
         Nothing matches that. Try fewer words, or <button class="linklike" id="clear-filters">clear the filters</button>.
       </p>
     </div>
+    {archivedCount > 0 && (
+      <p class="archive-link mono">
+        <a href="/blog/archive/">{archivedCount} older {archivedCount === 1 ? 'post is' : 'posts are'} archived for revision →</a>
+      </p>
+    )}
   </div>
 </Base>
 
@@ -73,6 +85,9 @@ const categories = [...new Set(posts.map((p) => p.data.category))];
   .topics-line a { color: var(--fg-2); text-decoration: none; }
   .topics-line a:hover { color: var(--acc); }
   .blog-list { margin-top: 18px; }
+  .archive-link { margin: 30px 0 0; font-size: 12.5px; }
+  .archive-link a { color: var(--fg-3); text-decoration: none; }
+  .archive-link a:hover { color: var(--acc); }
   .empty-note { color: var(--fg-2); padding: 34px 0; }
   .linklike {
     background: none;

@@ -3,7 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Newsletter from '../../components/Newsletter.astro';
 import Comments from '../../components/Comments.astro';
-import { formatDate, readingTime, sortedPosts } from '../../utils.js';
+import { formatDate, readingTime, sortedPosts, publishedPosts } from '../../utils.js';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -11,24 +11,31 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
+const isArchived = post.data.status === 'archived';
 const { Content, headings } = await render(post);
 const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 3);
 const mins = readingTime(post.body);
 
-const all = sortedPosts(await getCollection('blog'));
+const all = sortedPosts(publishedPosts(await getCollection('blog')));
 const idx = all.findIndex((p) => p.id === post.id);
-const newer = idx > 0 ? all[idx - 1] : null;
-const older = idx < all.length - 1 ? all[idx + 1] : null;
+const newer = !isArchived && idx > 0 ? all[idx - 1] : null;
+const older = !isArchived && idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
 const related = all
   .filter((p) => p.id !== post.id)
   .sort((a, b) => (b.data.category === post.data.category) - (a.data.category === post.data.category))
   .slice(0, 2);
 ---
-<Base title={post.data.title} description={post.data.description} ogType="article">
+<Base title={post.data.title} description={post.data.description} ogType="article" noindex={isArchived}>
   <div class="container article-grid">
     <article class="article-main">
       <p class="back-link mono"><a href="/blog/">← All articles</a></p>
       <header class="article-header">
+        {isArchived && (
+          <aside class="archive-notice" aria-label="Archive status">
+            <strong>Archived for revision.</strong> This early post is kept available at its original URL,
+            but it is no longer part of the published article collection.
+          </aside>
+        )}
         <span class="chip chip-acc">{post.data.category}</span>
         <h1 class="article-title">{post.data.title}</h1>
         <p class="article-sub">{post.data.description}</p>
@@ -128,6 +135,14 @@ const related = all
   .back-link a { color: var(--fg-3); text-decoration: none; }
   .back-link a:hover { color: var(--acc); }
   .article-header { margin-bottom: 38px; }
+  .archive-notice {
+    border-left: 3px solid var(--acc);
+    background: var(--acc-soft);
+    color: var(--fg-2);
+    padding: 14px 16px;
+    margin: 0 0 26px;
+    font-size: 14px;
+  }
   .article-title {
     font-size: clamp(32px, 5vw, 46px);
     letter-spacing: -.01em;

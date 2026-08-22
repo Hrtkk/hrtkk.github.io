@@ -1,35 +1,40 @@
-// The six content pillars. Slugs are stable URLs (/topics/<slug>/) used in
-// YouTube descriptions and social bios — do not rename without redirects.
+// Stable research areas. Fine-grained subjects belong in post tags so this
+// navigation does not become a wall of near-duplicate categories.
 export const PILLARS = [
   {
-    slug: 'system-design',
-    label: 'System Design',
-    blurb: 'Distributed systems, architecture trade-offs, and how large-scale systems actually work — starting at the constraint, not the API.'
+    slug: 'distributed-systems',
+    label: 'Distributed Systems',
+    blurb: 'Kafka, Flink, DDIA, data infrastructure, and the trade-offs behind reliable systems.'
   },
   {
-    slug: 'software-craft',
-    label: 'Software Craft',
-    blurb: 'The everyday skills of building good software: patterns worth using, testing, code review, and reading unfamiliar codebases.'
+    slug: 'ai-ml',
+    label: 'AI & ML',
+    blurb: 'Models, agents, evaluation, and the engineering required to make AI systems useful and dependable.'
   },
   {
-    slug: 'ai-agents',
-    label: 'AI & Agents',
-    blurb: 'AI engineering for developers — agents, RAG, tool use, and adding AI features to real applications without the hype.'
+    slug: 'speech-audio',
+    label: 'Speech & Audio',
+    blurb: 'ASR, speech models, audio understanding, and the systems that make voice interfaces work.'
   },
   {
-    slug: 'everyday-ai',
-    label: 'Everyday AI',
-    blurb: 'Practical AI for everyone else: real tasks, free tools, and exactly which buttons to press. No jargon.'
+    slug: 'vision-video',
+    label: 'Vision & Video',
+    blurb: 'Visual understanding, video generation and processing, and production systems for moving images.'
   },
   {
-    slug: 'learning',
-    label: 'Learning',
-    blurb: 'How people actually learn — spaced repetition, active recall, and using AI as a tutor instead of a shortcut.'
+    slug: 'multimodal-ai',
+    label: 'Multimodal AI',
+    blurb: 'Systems that reason across text, images, audio, and video instead of treating each modality alone.'
   },
   {
-    slug: 'build-in-public',
-    label: 'Build in Public',
-    blurb: 'Devlogs from building Manaska, an adaptive learning platform: real architecture decisions and what they cost.'
+    slug: 'context-memory',
+    label: 'Context & Memory',
+    blurb: 'Retrieval, long context, memory architectures, and how intelligent systems preserve useful state.'
+  },
+  {
+    slug: 'manaska-research',
+    label: 'Manaska Research',
+    blurb: 'Research notes and engineering decisions from building Manaska as an adaptive learning system.'
   }
 ];
 

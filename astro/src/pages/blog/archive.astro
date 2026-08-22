@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PostRow from '../../components/PostRow.astro';
+import { sortedPosts, archivedPosts } from '../../utils.js';
+
+const posts = sortedPosts(archivedPosts(await getCollection('blog')));
+---
+<Base
+  title="Archive"
+  description="Older ByteScribble posts held for revision and possible republication."
+  noindex
+>
+  <div class="container archive-wrap">
+    <header class="archive-header">
+      <p class="back-link mono"><a href="/blog/">← Published articles</a></p>
+      <h1>Archive</h1>
+      <p>
+        These early posts are no longer part of the main collection. Their original URLs
+        remain available while the material is reconsidered, rewritten, or retired.
+      </p>
+    </header>
+    <div class="archive-list">
+      {posts.map((post) => <PostRow post={post} />)}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .archive-wrap { max-width: 860px; }
+  .archive-header { padding: 56px 0 24px; }
+  .archive-header h1 { font-size: clamp(36px, 5vw, 48px); }
+  .archive-header > p:last-child { color: var(--fg-2); max-width: 48em; }
+  .back-link { font-size: 12.5px; margin: 0 0 18px; }
+  .back-link a { color: var(--fg-3); text-decoration: none; }
+  .back-link a:hover { color: var(--acc); }
+  .archive-list :global(.post-row:first-child) { border-top: 0; }
+</style>

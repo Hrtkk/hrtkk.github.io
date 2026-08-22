@@ -3,6 +3,9 @@ title: "The Architecture of Apache Flink"
 description: "How a job graph becomes a running dataflow: the JobManager/TaskManager split, slot sharing, and why Flink's checkpoint barriers give you exactly-once without stopping the world."
 date: 2026-07-25 07:30:00 +0530
 category: "Stream Processing"
+pillar: "distributed-systems"
+tags: ["flink", "stream-processing", "state", "fault-tolerance"]
+status: "published"
 featured: true
 ---
 

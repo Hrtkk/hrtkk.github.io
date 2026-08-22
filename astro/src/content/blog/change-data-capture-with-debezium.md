@@ -3,6 +3,9 @@ title: "Change Data Capture with Debezium: PostgreSQL and Oracle"
 description: "Reading the WAL instead of polling the table — connector config, schema changes, and the snapshot problem."
 date: 2026-07-25 06:30:00 +0530
 category: "System Design"
+pillar: "distributed-systems"
+tags: ["debezium", "cdc", "postgresql", "oracle", "kafka"]
+status: "published"
 ---
 
 Change Data Capture (CDC) is a pattern where every row-level change in a database — inserts, updates, and deletes — is captured as a stream of events that other systems can consume. Debezium is one of the most popular open-source CDC platforms: it tails the database's transaction log and publishes each change to Kafka.

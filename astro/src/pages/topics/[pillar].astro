@@ -3,15 +3,20 @@ import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import PostRow from '../../components/PostRow.astro';
 import Newsletter from '../../components/Newsletter.astro';
-import { sortedPosts } from '../../utils.js';
+import { sortedPosts, publishedPosts } from '../../utils.js';
 import { PILLARS } from '../../pillars.js';
 
 export async function getStaticPaths() {
-  return PILLARS.map((pillar) => ({ params: { pillar: pillar.slug }, props: { pillar } }));
+  const posts = publishedPosts(await getCollection('blog'));
+  return PILLARS
+    .filter((pillar) => posts.some((post) => post.data.pillar === pillar.slug))
+    .map((pillar) => ({ params: { pillar: pillar.slug }, props: { pillar } }));
 }
 
 const { pillar } = Astro.props;
-const posts = sortedPosts(await getCollection('blog', (p) => p.data.pillar === pillar.slug));
+const posts = sortedPosts(
+  publishedPosts(await getCollection('blog', (p) => p.data.pillar === pillar.slug))
+);
 ---
 <Base title={pillar.label} description={pillar.blurb}>
   <div class="container">
@@ -21,18 +26,11 @@ const posts = sortedPosts(await getCollection('blog', (p) => p.data.pillar === p
       <p class="topic-blurb">{pillar.blurb}</p>
     </header>
 
-    {posts.length > 0 ? (
-      <div class="topic-list">
-        {posts.map((post) => <PostRow post={post} />)}
-      </div>
-    ) : (
-      <p class="topic-empty panel">
-        Nothing published here yet — new videos and posts land every two weeks.
-        Subscribe below and you'll get the first one.
-      </p>
-    )}
+    <div class="topic-list">
+      {posts.map((post) => <PostRow post={post} />)}
+    </div>
 
-    <Newsletter compact={posts.length === 0} />
+    <Newsletter />
   </div>
 </Base>
 
@@ -45,5 +43,4 @@ const posts = sortedPosts(await getCollection('blog', (p) => p.data.pillar === p
   .topic-blurb { color: var(--fg-2); font-size: 17px; max-width: 46em; margin: 12px 0 26px; }
   .topic-list { margin-top: 10px; }
   .topic-list :global(.post-row:first-child) { border-top: 0; }
-  .topic-empty { padding: 26px 28px; color: var(--fg-2); max-width: 46em; }
 </style>

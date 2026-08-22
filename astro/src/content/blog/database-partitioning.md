@@ -3,6 +3,9 @@ title: "Database Partitioning: Splitting Data Without Splitting Headaches"
 description: "Range vs hash partitioning, hot keys, secondary indexes, and what rebalancing actually costs you."
 date: 2026-07-25 07:00:00 +0530
 category: "DDIA"
+pillar: "distributed-systems"
+tags: ["ddia", "partitioning", "sharding", "distributed-databases"]
+status: "published"
 ---
 
 When a dataset grows beyond what a single machine can store or serve, we split it across multiple nodes. This is called **partitioning** (or *sharding*). The goal is to spread both the data and the query load evenly — and the interesting problems show up when the spread is not even.
